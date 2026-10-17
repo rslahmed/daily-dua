@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Category, CategoryId } from '../types/dua';
 import { OverallProgressCard } from '../components/OverallProgressCard';
 import { CategoryCard } from '../components/CategoryCard';
+import { useSettings } from '../context/SettingsContext';
 import categoriesDataRaw from '../data/categories.json';
 
 const categories: Category[] = categoriesDataRaw as Category[];
@@ -12,6 +13,8 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
+  const { arabicFont } = useSettings();
+
   return (
     <ScrollView
       style={styles.container}
@@ -38,7 +41,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
 
       {/* Islamic Quote Card */}
       <View style={styles.quoteCard}>
-        <Text style={styles.quoteArabic}>أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</Text>
+        <Text style={[styles.quoteArabic, { fontFamily: arabicFont }]}>
+          أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
+        </Text>
         <Text style={styles.quoteBangla}>
           "জেনে রেখো, একমাত্র আল্লাহর স্মরণেই অন্তরসমূহ প্রশান্তি লাভ করে।"
         </Text>

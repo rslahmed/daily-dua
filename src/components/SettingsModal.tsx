@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSettings } from '../context/SettingsContext';
 import { useDuaProgress } from '../context/DuaProgressContext';
 import { toBanglaNumber } from '../utils/date';
+import { ArabicFontChoice } from '../types/dua';
 
 interface SettingsModalProps {
   visible: boolean;
@@ -25,10 +26,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
     showOrtho,
     showFazilat,
     arabicFontSize,
+    arabicFont,
     setShowUccharon,
     setShowOrtho,
     setShowFazilat,
     setArabicFontSize,
+    setArabicFont,
   } = useSettings();
 
   const { resetTodayProgress } = useDuaProgress();
@@ -49,6 +52,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
       ]
     );
   };
+
+  const fontChoices: { id: ArabicFontChoice; label: string; sublabel: string }[] = [
+    { id: 'AlMajeed', label: 'আল মজিদ (Al Majeed Quranic)', sublabel: 'কুরআনিক স্পষ্ট চমৎকার লিপি (ডিফল্ট)' },
+    { id: 'Hafs', label: 'হাফস (Hafs Quranic)', sublabel: 'প্রথাগত উসমানী হাফস ফন্ট' },
+  ];
 
   const fontSizes = [
     { label: 'ছোট', size: 22 },
@@ -134,9 +142,48 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
               </View>
             </View>
 
+            {/* Arabic Font Selection Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionHeader}>আরবি ফন্ট নির্বাচন (Arabic Font)</Text>
+              <Text style={styles.sectionDesc}>
+                আপনার পছন্দের কুরআনিক আরবি ফন্ট বেছে নিন:
+              </Text>
+              <View style={styles.fontChoiceList}>
+                {fontChoices.map((f) => {
+                  const isSelected = arabicFont === f.id;
+                  return (
+                    <TouchableOpacity
+                      key={f.id}
+                      style={[
+                        styles.fontChoiceButton,
+                        isSelected && styles.fontChoiceButtonSelected,
+                      ]}
+                      onPress={() => setArabicFont(f.id)}
+                      activeOpacity={0.7}
+                    >
+                      <View style={[styles.fontChoiceRadio, isSelected && styles.fontChoiceRadioSelected]}>
+                        {isSelected && <View style={styles.fontChoiceRadioInner} />}
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={[
+                            styles.fontChoiceTitle,
+                            isSelected && styles.fontChoiceTitleSelected,
+                          ]}
+                        >
+                          {f.label}
+                        </Text>
+                        <Text style={styles.fontChoiceSubtitle}>{f.sublabel}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
             {/* Arabic Font Size Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionHeader}>আরবি ফন্ট সাইজ (Al Majeed Quranic Font)</Text>
+              <Text style={styles.sectionHeader}>আরবি ফন্ট সাইজ (Font Size)</Text>
               <View style={styles.fontSizeOptions}>
                 {fontSizes.map((f) => {
                   const isSelected = arabicFontSize === f.size;
@@ -164,11 +211,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
 
               {/* Preview Box */}
               <View style={styles.previewBox}>
-                <Text style={styles.previewLabel}>লাইভ প্রিভিউ:</Text>
+                <Text style={styles.previewLabel}>
+                  লাইভ প্রিভিউ ({arabicFont === 'AlMajeed' ? 'আল মজিদ' : 'হাফস'} ফন্ট):
+                </Text>
                 <Text
                   style={[
                     styles.previewArabic,
                     {
+                      fontFamily: arabicFont,
                       fontSize: arabicFontSize,
                       lineHeight: Math.round(arabicFontSize * 1.9),
                     },
@@ -301,6 +351,57 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontFamily: 'HindSiliguri_400Regular',
     marginTop: 2,
+  },
+  fontChoiceList: {
+    gap: 10,
+    marginTop: 6,
+    marginBottom: 4,
+  },
+  fontChoiceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: '#172721',
+    borderWidth: 1,
+    borderColor: '#243D32',
+    gap: 12,
+  },
+  fontChoiceButtonSelected: {
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    borderColor: '#10B981',
+  },
+  fontChoiceRadio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#475569',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fontChoiceRadioSelected: {
+    borderColor: '#10B981',
+  },
+  fontChoiceRadioInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#10B981',
+  },
+  fontChoiceTitle: {
+    fontSize: 14,
+    color: '#E2E8F0',
+    fontFamily: 'HindSiliguri_600SemiBold',
+  },
+  fontChoiceTitleSelected: {
+    color: '#34D399',
+  },
+  fontChoiceSubtitle: {
+    fontSize: 11,
+    color: '#94A3B8',
+    fontFamily: 'HindSiliguri_400Regular',
+    marginTop: 1,
   },
   fontSizeOptions: {
     flexDirection: 'row',

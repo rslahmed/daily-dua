@@ -28,7 +28,8 @@
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/AlMajeed.ttf"
+            "./assets/fonts/AlMajeed.ttf",
+            "./assets/fonts/hafs.ttf"
           ]
         }
       ],

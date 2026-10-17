@@ -13,7 +13,7 @@ interface DuaCardProps {
 
 export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
   const { isDuaRead, toggleDuaRead, getDuaTapCount, incrementDuaTap } = useDuaProgress();
-  const { showUccharon, showOrtho, showFazilat, arabicFontSize } = useSettings();
+  const { showUccharon, showOrtho, showFazilat, arabicFontSize, arabicFont } = useSettings();
 
   const isRead = isDuaRead(dua.id);
   const currentTaps = getDuaTapCount(dua.id);
@@ -54,12 +54,13 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Part 1: Arabic Text (Hafs Font) */}
+      {/* Part 1: Arabic Text */}
       <View style={styles.arabicContainer}>
         <Text
           style={[
             styles.arabicText,
             {
+              fontFamily: arabicFont,
               fontSize: arabicFontSize,
               lineHeight: Math.round(arabicFontSize * 2.0),
             },
