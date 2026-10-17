@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getFormattedBanglaDate } from '../utils/date';
 
@@ -34,9 +34,10 @@ export const Header: React.FC<HeaderProps> = ({
           </TouchableOpacity>
         ) : (
           <View style={styles.logoRow}>
-            <View style={styles.logoBadge}>
-              <Ionicons name="book" size={18} color="#10B981" />
-            </View>
+            <Image
+              source={require('../../assets/icon.png')}
+              style={styles.logoBadge}
+            />
             <View>
               <Text style={styles.appName}>Daily Dua</Text>
               <Text style={styles.appBangla}>দৈনিক দোয়া</Text>
