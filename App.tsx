@@ -1,19 +1,113 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+  HindSiliguri_400Regular,
+  HindSiliguri_500Medium,
+  HindSiliguri_600SemiBold,
+  HindSiliguri_700Bold,
+} from '@expo-google-fonts/hind-siliguri';
+
+import { SettingsProvider } from './src/context/SettingsContext';
+import { DuaProgressProvider } from './src/context/DuaProgressContext';
+import { Header } from './src/components/Header';
+import { SettingsModal } from './src/components/SettingsModal';
+import { HomeScreen } from './src/screens/HomeScreen';
+import { CategoryDetailScreen } from './src/screens/CategoryDetailScreen';
+import { Category, CategoryId } from './src/types/dua';
+import categoriesDataRaw from './src/data/categories.json';
+
+const categories: Category[] = categoriesDataRaw as Category[];
+
+// Prevent splash screen from auto-hiding until assets are loaded
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
+function MainContent() {
+  const [activeCategoryId, setActiveCategoryId] = useState<CategoryId | null>(null);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+
+  const activeCategory = categories.find((c) => c.id === activeCategoryId);
+
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <StatusBar style="light" />
+
+      {/* Top Header */}
+      <Header
+        showBack={activeCategoryId !== null}
+        onBack={() => setActiveCategoryId(null)}
+        title={activeCategory ? activeCategory.titleBangla : undefined}
+        subtitle={activeCategory ? activeCategory.timeBangla : undefined}
+        onOpenSettings={() => setIsSettingsVisible(true)}
+      />
+
+      {/* Main Screens */}
+      <View style={styles.screenContainer}>
+        {activeCategoryId === null ? (
+          <HomeScreen onSelectCategory={(catId) => setActiveCategoryId(catId)} />
+        ) : (
+          <CategoryDetailScreen categoryId={activeCategoryId} />
+        )}
+      </View>
+
+      {/* Settings Modal */}
+      <SettingsModal
+        visible={isSettingsVisible}
+        onClose={() => setIsSettingsVisible(false)}
+      />
+    </SafeAreaView>
+  );
+}
 
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    hafs: require('./assets/fonts/hafs.ttf'),
+    HindSiliguri_400Regular,
+    HindSiliguri_500Medium,
+    HindSiliguri_600SemiBold,
+    HindSiliguri_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#10B981" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <SettingsProvider>
+        <DuaProgressProvider>
+          <MainContent />
+        </DuaProgressProvider>
+      </SettingsProvider>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0A0F0D',
+  },
+  screenContainer: {
+    flex: 1,
+    backgroundColor: '#0A0F0D',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#0A0F0D',
     alignItems: 'center',
     justifyContent: 'center',
   },

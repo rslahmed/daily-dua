@@ -1,0 +1,26 @@
+[
+  {
+    "id": "sokal",
+    "titleBangla": "সকালের দোয়া",
+    "subtitleBangla": "ফজর হতে সূর্যোদয় পর্যন্ত পাঠ্য মাসনূন দোয়া ও জিকির",
+    "timeBangla": "ফজর পরবর্তী সময়",
+    "icon": "sunny-outline",
+    "badge": "সকাল"
+  },
+  {
+    "id": "sondha",
+    "titleBangla": "সন্ধ্যার দোয়া",
+    "subtitleBangla": "আসর হতে সূর্যাস্ত/মাগরিব পর্যন্ত পাঠ্য মাসনূন দোয়া ও জিকির",
+    "timeBangla": "আসর পরবর্তী সময়",
+    "icon": "moon-outline",
+    "badge": "সন্ধ্যা"
+  },
+  {
+    "id": "namaz",
+    "titleBangla": "নামাজের পরের দোয়া",
+    "subtitleBangla": "ফরজ সালাত সমাপনের পর পঠিত গুরুত্বপূর্ণ সুন্নাত জিকির",
+    "timeBangla": "ফরজ নামাজের পর",
+    "icon": "sparkles-outline",
+    "badge": "ফরজ সালাত"
+  }
+]
