@@ -39,3 +39,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# temporary script artifacts
+scripts/pages/
+scripts/*.png
+scripts/*.txt
