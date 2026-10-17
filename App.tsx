@@ -64,7 +64,8 @@ function MainContent() {
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
-    hafs: require('./assets/fonts/hafs.ttf'),
+    AlMajeed: require('./assets/fonts/AlMajeed.ttf'),
+    hafs: require('./assets/fonts/AlMajeed.ttf'),
     HindSiliguri_400Regular,
     HindSiliguri_500Medium,
     HindSiliguri_600SemiBold,

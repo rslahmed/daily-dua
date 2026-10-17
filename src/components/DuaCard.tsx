@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   arabicText: {
     color: '#FFFFFF',
-    fontFamily: 'hafs',
+    fontFamily: 'AlMajeed',
     textAlign: 'right',
     writingDirection: 'rtl',
   },

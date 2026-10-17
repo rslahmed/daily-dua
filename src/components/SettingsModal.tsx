@@ -136,7 +136,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
 
             {/* Arabic Font Size Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionHeader}>আরবি ফন্ট সাইজ (Hafs Font)</Text>
+              <Text style={styles.sectionHeader}>আরবি ফন্ট সাইজ (Al Majeed Quranic Font)</Text>
               <View style={styles.fontSizeOptions}>
                 {fontSizes.map((f) => {
                   const isSelected = arabicFontSize === f.size;
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
   previewArabic: {
     color: '#FFFFFF',
-    fontFamily: 'hafs',
+    fontFamily: 'AlMajeed',
     textAlign: 'center',
   },
   resetButton: {

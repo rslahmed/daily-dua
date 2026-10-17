@@ -27,10 +27,17 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/hafs.ttf"]
+          "fonts": [
+            "./assets/fonts/AlMajeed.ttf"
+          ]
         }
       ],
       "expo-splash-screen"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "68eccf11-8f66-42b8-9e24-1d8746b0bd4d"
+      }
+    }
   }
 }

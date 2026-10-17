@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   quoteArabic: {
     fontSize: 18,
     color: '#34D399',
-    fontFamily: 'hafs',
+    fontFamily: 'AlMajeed',
     textAlign: 'center',
     marginBottom: 8,
   },
