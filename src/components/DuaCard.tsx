@@ -16,7 +16,8 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
   const { isDuaRead, toggleDuaRead } = useDuaProgress();
   const { showUccharon, showOrtho, showFazilat, arabicFontSize, arabicFont } = useSettings();
 
-  const isRead = isDuaRead(dua.id);
+  const isNamaz = dua.categoryId === 'namaz';
+  const isRead = !isNamaz && isDuaRead(dua.id);
 
   return (
     <View style={[styles.card, isRead && styles.cardRead]}>
@@ -91,30 +92,32 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
 
       {/* Part 5: Reference */}
       {dua.referenceBangla && (
-        <View style={styles.referenceRow}>
+        <View style={[styles.referenceRow, isNamaz && styles.referenceRowLast]}>
           <Ionicons name="bookmark-outline" size={13} color="#6EE7B7" style={{ marginTop: 2, marginRight: 6 }} />
           <Text style={styles.referenceText}>{dua.referenceBangla}</Text>
         </View>
       )}
 
-      {/* Bottom Action: Mark As Read Button */}
-      <View style={styles.footerRow}>
-        <TouchableOpacity
-          style={[styles.readButton, isRead && styles.readButtonActive]}
-          onPress={() => toggleDuaRead(dua.id)}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={isRead ? 'checkmark-circle' : 'radio-button-off'}
-            size={18}
-            color={isRead ? '#FFFFFF' : '#10B981'}
-            style={{ marginRight: 8 }}
-          />
-          <Text style={[styles.readButtonText, isRead && styles.readButtonTextActive]}>
-            {isRead ? 'পড়া হয়েছে' : 'পড়া হিসেবে চিহ্নিত করুন'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {/* Bottom Action: Mark As Read Button (not needed for namaj duas) */}
+      {!isNamaz && (
+        <View style={styles.footerRow}>
+          <TouchableOpacity
+            style={[styles.readButton, isRead && styles.readButtonActive]}
+            onPress={() => toggleDuaRead(dua.id)}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={isRead ? 'checkmark-circle' : 'radio-button-off'}
+              size={18}
+              color={isRead ? '#FFFFFF' : '#10B981'}
+              style={{ marginRight: 8 }}
+            />
+            <Text style={[styles.readButtonText, isRead && styles.readButtonTextActive]}>
+              {isRead ? 'পড়া হয়েছে' : 'পড়া হিসেবে চিহ্নিত করুন'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -257,6 +260,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 12,
     paddingTop: 2,
+  },
+  referenceRowLast: {
+    marginBottom: 2,
   },
   referenceText: {
     color: '#6EE7B7',

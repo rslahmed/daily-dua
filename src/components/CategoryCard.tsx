@@ -16,7 +16,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress })
   const { getCategoryProgress } = useDuaProgress();
   const { completed, total, percentage } = getCategoryProgress(category.id);
 
-  const isCompleted = total > 0 && completed === total;
+  const isNamaz = category.id === 'namaz';
+  const isCompleted = !isNamaz && total > 0 && completed === total;
 
   return (
     <TouchableOpacity
@@ -49,21 +50,34 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress })
         </View>
 
         <View style={styles.footer}>
-          <View style={styles.progressLabelRow}>
-            <Text style={styles.progressCountText}>
-              সম্পন্ন: {toBanglaNumber(completed)}/{toBanglaNumber(total)} টি
-            </Text>
-            <Text style={[styles.percentageText, isCompleted && styles.percentageTextCompleted]}>
-              {isCompleted ? '✓ সম্পূর্ণ' : `${toBanglaNumber(percentage)}%`}
-            </Text>
-          </View>
+          {isNamaz ? (
+            <View style={[styles.progressLabelRow, { marginBottom: 0 }]}>
+              <Text style={styles.progressCountText}>
+                মোট {toBanglaNumber(total)} টি দোয়া
+              </Text>
+              <Text style={styles.namazBadgeText}>
+                ফরজ সালাত সমাপনের পর পাঠ্য
+              </Text>
+            </View>
+          ) : (
+            <>
+              <View style={styles.progressLabelRow}>
+                <Text style={styles.progressCountText}>
+                  সম্পন্ন: {toBanglaNumber(completed)}/{toBanglaNumber(total)} টি
+                </Text>
+                <Text style={[styles.percentageText, isCompleted && styles.percentageTextCompleted]}>
+                  {isCompleted ? '✓ সম্পূর্ণ' : `${toBanglaNumber(percentage)}%`}
+                </Text>
+              </View>
 
-          <ProgressBar
-            progress={percentage}
-            height={5}
-            color={isCompleted ? '#34D399' : '#10B981'}
-            backgroundColor="#1A2D25"
-          />
+              <ProgressBar
+                progress={percentage}
+                height={5}
+                color={isCompleted ? '#34D399' : '#10B981'}
+                backgroundColor="#1A2D25"
+              />
+            </>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -153,5 +167,10 @@ const styles = StyleSheet.create({
   },
   percentageTextCompleted: {
     color: '#34D399',
+  },
+  namazBadgeText: {
+    fontSize: 12,
+    color: '#34D399',
+    fontFamily: 'NotoSansBengali_500Medium',
   },
 });

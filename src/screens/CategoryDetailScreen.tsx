@@ -26,13 +26,16 @@ export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ cate
   const categoryDuas = allDuas.filter((d) => d.categoryId === categoryId);
 
   const { completed, total, percentage } = getCategoryProgress(categoryId);
+  const isNamaz = categoryId === 'namaz';
 
-  const filteredDuas = categoryDuas.filter((d) => {
-    const isRead = isDuaRead(d.id);
-    if (activeTab === 'unread') return !isRead;
-    if (activeTab === 'read') return isRead;
-    return true;
-  });
+  const filteredDuas = isNamaz
+    ? categoryDuas
+    : categoryDuas.filter((d) => {
+        const isRead = isDuaRead(d.id);
+        if (activeTab === 'unread') return !isRead;
+        if (activeTab === 'read') return isRead;
+        return true;
+      });
 
   const unreadCount = total - completed;
 
@@ -44,57 +47,63 @@ export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ cate
     >
       {/* Category Progress Banner */}
       <View style={styles.banner}>
-        <View style={styles.bannerTop}>
+        <View style={[styles.bannerTop, isNamaz && { marginBottom: 0 }]}>
           <View>
             <Text style={styles.bannerTitle}>{currentCategory.titleBangla}</Text>
             <Text style={styles.bannerSubtitle}>{currentCategory.timeBangla}</Text>
           </View>
           <View style={styles.bannerBadge}>
             <Text style={styles.bannerBadgeText}>
-              {toBanglaNumber(completed)}/{toBanglaNumber(total)} সম্পন্ন
+              {isNamaz
+                ? `মোট ${toBanglaNumber(total)}টি দোয়া`
+                : `${toBanglaNumber(completed)}/${toBanglaNumber(total)} সম্পন্ন`}
             </Text>
           </View>
         </View>
 
-        <View style={styles.progressBarWrapper}>
-          <ProgressBar
-            progress={percentage}
-            height={6}
-            color={completed === total && total > 0 ? '#34D399' : '#10B981'}
-            backgroundColor="#1A2D25"
-          />
+        {!isNamaz && (
+          <View style={styles.progressBarWrapper}>
+            <ProgressBar
+              progress={percentage}
+              height={6}
+              color={completed === total && total > 0 ? '#34D399' : '#10B981'}
+              backgroundColor="#1A2D25"
+            />
+          </View>
+        )}
+      </View>
+
+      {/* Filter Tabs (only for trackable routine categories) */}
+      {!isNamaz && (
+        <View style={styles.tabsContainer}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'all' && styles.tabActive]}
+            onPress={() => setActiveTab('all')}
+          >
+            <Text style={[styles.tabText, activeTab === 'all' && styles.tabTextActive]}>
+              সব দোয়া ({toBanglaNumber(total)})
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'unread' && styles.tabActive]}
+            onPress={() => setActiveTab('unread')}
+          >
+            <Text style={[styles.tabText, activeTab === 'unread' && styles.tabTextActive]}>
+              বাকি আছে ({toBanglaNumber(unreadCount)})
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'read' && styles.tabActive]}
+            onPress={() => setActiveTab('read')}
+          >
+            <Text style={[styles.tabText, activeTab === 'read' && styles.tabTextActive]}>
+              পড়া হয়েছে ({toBanglaNumber(completed)})
+            </Text>
+          </TouchableOpacity>
         </View>
-      </View>
-
-      {/* Filter Tabs */}
-      <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'all' && styles.tabActive]}
-          onPress={() => setActiveTab('all')}
-        >
-          <Text style={[styles.tabText, activeTab === 'all' && styles.tabTextActive]}>
-            সব দোয়া ({toBanglaNumber(total)})
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'unread' && styles.tabActive]}
-          onPress={() => setActiveTab('unread')}
-        >
-          <Text style={[styles.tabText, activeTab === 'unread' && styles.tabTextActive]}>
-            বাকি আছে ({toBanglaNumber(unreadCount)})
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'read' && styles.tabActive]}
-          onPress={() => setActiveTab('read')}
-        >
-          <Text style={[styles.tabText, activeTab === 'read' && styles.tabTextActive]}>
-            পড়া হয়েছে ({toBanglaNumber(completed)})
-          </Text>
-        </TouchableOpacity>
-      </View>
+      )}
 
       {/* Dua Cards List */}
       {filteredDuas.length > 0 ? (

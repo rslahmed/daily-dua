@@ -62,8 +62,14 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (stored) {
         const parsed: DailyProgressState = JSON.parse(stored);
         if (parsed.lastDate === today) {
-          setReadDuaIds(parsed.readDuaIds || []);
-          setDuaTapCounts(parsed.duaTapCounts || {});
+          const namazDuaIds = new Set(allDuas.filter((d) => d.categoryId === 'namaz').map((d) => d.id));
+          const cleanedReadIds = (parsed.readDuaIds || []).filter((id) => !namazDuaIds.has(id));
+          const cleanedTapCounts = { ...(parsed.duaTapCounts || {}) };
+          namazDuaIds.forEach((id) => {
+            delete cleanedTapCounts[id];
+          });
+          setReadDuaIds(cleanedReadIds);
+          setDuaTapCounts(cleanedTapCounts);
           setIsProgressLoaded(true);
           return;
         }
@@ -99,11 +105,15 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const toggleDuaRead = async (duaId: string) => {
+    const dua = allDuas.find((d) => d.id === duaId);
+    if (dua && dua.categoryId === 'namaz') {
+      return;
+    }
+
     const isCurrentlyRead = readDuaIds.includes(duaId);
     let updatedReadIds: string[];
     let updatedTapCounts = { ...duaTapCounts };
 
-    const dua = allDuas.find((d) => d.id === duaId);
     const targetCount = dua ? dua.repetitionCount : 1;
 
     if (isCurrentlyRead) {
@@ -122,6 +132,10 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const incrementDuaTap = async (dua: Dua) => {
+    if (dua.categoryId === 'namaz') {
+      return;
+    }
+
     const current = duaTapCounts[dua.id] || 0;
     const target = dua.repetitionCount;
     const next = current + 1;
@@ -164,14 +178,19 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const getCategoryProgress = (categoryId: CategoryId): CategoryProgress => {
     const categoryDuas = allDuas.filter((d) => d.categoryId === categoryId);
     const total = categoryDuas.length;
+    if (categoryId === 'namaz') {
+      return { completed: 0, total, percentage: 0 };
+    }
     const completed = categoryDuas.filter((d) => readDuaIds.includes(d.id)).length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     return { completed, total, percentage };
   };
 
   const getOverallProgress = (): CategoryProgress => {
-    const total = allDuas.length;
-    const completed = allDuas.filter((d) => readDuaIds.includes(d.id)).length;
+    // Only track daily routine categories (sokal, sondha), namaz is recited after each obligatory prayer
+    const trackableDuas = allDuas.filter((d) => d.categoryId !== 'namaz');
+    const total = trackableDuas.length;
+    const completed = trackableDuas.filter((d) => readDuaIds.includes(d.id)).length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     return { completed, total, percentage };
   };
