@@ -30,10 +30,11 @@
           "fonts": [
             "./assets/fonts/AlMajeed.ttf",
             "./assets/fonts/hafs.ttf",
-            "./assets/fonts/HindSiliguri-Regular.ttf",
-            "./assets/fonts/HindSiliguri-Medium.ttf",
-            "./assets/fonts/HindSiliguri-SemiBold.ttf",
-            "./assets/fonts/HindSiliguri-Bold.ttf"
+            "./assets/fonts/noorehuda.ttf",
+            "./assets/fonts/NotoSansBengali-Regular.ttf",
+            "./assets/fonts/NotoSansBengali-Medium.ttf",
+            "./assets/fonts/NotoSansBengali-SemiBold.ttf",
+            "./assets/fonts/NotoSansBengali-Bold.ttf"
           ]
         }
       ],

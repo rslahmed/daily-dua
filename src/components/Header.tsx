@@ -80,9 +80,9 @@ export const Header: React.FC<HeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 16,
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 14,
     backgroundColor: '#0A0F0D',
     borderBottomWidth: 1,
     borderBottomColor: '#16221D',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   appBangla: {
     fontSize: 12,
     color: '#10B981',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
   },
   titleContainer: {
     flex: 1,
@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
   },
   headerSubtitle: {
     fontSize: 12,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 2,
   },
   iconButton: {
@@ -158,6 +158,6 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     color: '#CBD5E1',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
   },
 });

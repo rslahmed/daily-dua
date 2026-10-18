@@ -19,7 +19,6 @@ export interface Category {
   subtitleBangla: string;
   timeBangla: string;
   icon: string;
-  badge: string;
 }
 
 export interface DailyProgressState {
@@ -28,7 +27,7 @@ export interface DailyProgressState {
   duaTapCounts: Record<string, number>; // id -> current count
 }
 
-export type ArabicFontChoice = 'AlMajeed' | 'Hafs';
+export type ArabicFontChoice = 'noorehuda' | 'AlMajeed' | 'Hafs';
 
 export interface AppSettings {
   showUccharon: boolean;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, BackHandler } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
@@ -22,6 +22,27 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 function MainContent() {
   const [activeCategoryId, setActiveCategoryId] = useState<CategoryId | null>(null);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      if (isSettingsVisible) {
+        setIsSettingsVisible(false);
+        return true;
+      }
+      if (activeCategoryId !== null) {
+        setActiveCategoryId(null);
+        return true;
+      }
+      return false;
+    };
+
+    const backSubscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress
+    );
+
+    return () => backSubscription.remove();
+  }, [activeCategoryId, isSettingsVisible]);
 
   const activeCategory = categories.find((c) => c.id === activeCategoryId);
 
@@ -58,12 +79,19 @@ function MainContent() {
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
+    noorehuda: require('./assets/fonts/noorehuda.ttf'),
     AlMajeed: require('./assets/fonts/AlMajeed.ttf'),
     Hafs: require('./assets/fonts/hafs.ttf'),
-    HindSiliguri_400Regular: require('./assets/fonts/HindSiliguri-Regular.ttf'),
-    HindSiliguri_500Medium: require('./assets/fonts/HindSiliguri-Medium.ttf'),
-    HindSiliguri_600SemiBold: require('./assets/fonts/HindSiliguri-SemiBold.ttf'),
-    HindSiliguri_700Bold: require('./assets/fonts/HindSiliguri-Bold.ttf'),
+    // Primary reliable Bangla font: Noto Sans Bengali
+    NotoSansBengali_400Regular: require('./assets/fonts/NotoSansBengali-Regular.ttf'),
+    NotoSansBengali_500Medium: require('./assets/fonts/NotoSansBengali-Medium.ttf'),
+    NotoSansBengali_600SemiBold: require('./assets/fonts/NotoSansBengali-SemiBold.ttf'),
+    NotoSansBengali_700Bold: require('./assets/fonts/NotoSansBengali-Bold.ttf'),
+    // Backward-compatibility aliases so all existing styles render flawlessly
+    HindSiliguri_400Regular: require('./assets/fonts/NotoSansBengali-Regular.ttf'),
+    HindSiliguri_500Medium: require('./assets/fonts/NotoSansBengali-Medium.ttf'),
+    HindSiliguri_600SemiBold: require('./assets/fonts/NotoSansBengali-SemiBold.ttf'),
+    HindSiliguri_700Bold: require('./assets/fonts/NotoSansBengali-Bold.ttf'),
   });
 
   useEffect(() => {

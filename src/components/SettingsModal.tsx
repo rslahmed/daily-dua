@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSettings } from '../context/SettingsContext';
 import { useDuaProgress } from '../context/DuaProgressContext';
 import { toBanglaNumber } from '../utils/date';
+import { formatArabicText } from '../utils/text';
 import { ArabicFontChoice } from '../types/dua';
 
 interface SettingsModalProps {
@@ -54,9 +55,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
   };
 
   const fontChoices: { id: ArabicFontChoice; label: string; sublabel: string }[] = [
-    { id: 'AlMajeed', label: 'আল মজিদ (Al Majeed Quranic)', sublabel: 'কুরআনিক স্পষ্ট চমৎকার লিপি (ডিফল্ট)' },
+    { id: 'noorehuda', label: 'নূর-এ-হুদা (Noorehuda IndoPak)', sublabel: 'মুসলিম বাংলা অ্যাপের স্পষ্ট নূরানী লিপি (ডিফল্ট)' },
+    { id: 'AlMajeed', label: 'আল মজিদ (Al Majeed Quranic)', sublabel: 'কুরআনিক ঐতিহ্যবাহী স্পষ্ট লিপি' },
     { id: 'Hafs', label: 'হাফস (Hafs Quranic)', sublabel: 'প্রথাগত উসমানী হাফস ফন্ট' },
   ];
+
+  const getFontDisplayName = (font: ArabicFontChoice): string => {
+    switch (font) {
+      case 'noorehuda':
+        return 'নূর-এ-হুদা';
+      case 'AlMajeed':
+        return 'আল মজিদ';
+      case 'Hafs':
+        return 'হাফস';
+      default:
+        return '';
+    }
+  };
 
   const fontSizes = [
     { label: 'ছোট', size: 22 },
@@ -212,7 +227,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
               {/* Preview Box */}
               <View style={styles.previewBox}>
                 <Text style={styles.previewLabel}>
-                  লাইভ প্রিভিউ ({arabicFont === 'AlMajeed' ? 'আল মজিদ' : 'হাফস'} ফন্ট):
+                  লাইভ প্রিভিউ ({getFontDisplayName(arabicFont)} ফন্ট):
                 </Text>
                 <Text
                   style={[
@@ -220,11 +235,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
                     {
                       fontFamily: arabicFont,
                       fontSize: arabicFontSize,
-                      lineHeight: Math.round(arabicFontSize * 1.9),
+                      lineHeight: Math.round(arabicFontSize * 2.5),
+                      letterSpacing: 1.0,
                     },
                   ]}
                 >
-                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                  {formatArabicText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ')}
                 </Text>
               </View>
             </View>
@@ -296,7 +312,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
   },
   closeButton: {
     width: 36,
@@ -320,13 +336,13 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 15,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
     marginBottom: 4,
   },
   sectionDesc: {
     fontSize: 12,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginBottom: 14,
   },
   settingRow: {
@@ -344,12 +360,12 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: 14,
     color: '#E2E8F0',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   settingSubtitle: {
     fontSize: 11,
     color: '#64748B',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 2,
   },
   fontChoiceList: {
@@ -392,7 +408,7 @@ const styles = StyleSheet.create({
   fontChoiceTitle: {
     fontSize: 14,
     color: '#E2E8F0',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   fontChoiceTitleSelected: {
     color: '#34D399',
@@ -400,7 +416,7 @@ const styles = StyleSheet.create({
   fontChoiceSubtitle: {
     fontSize: 11,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 1,
   },
   fontSizeOptions: {
@@ -425,7 +441,7 @@ const styles = StyleSheet.create({
   fontSizeButtonText: {
     fontSize: 12,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   fontSizeButtonTextSelected: {
     color: '#FFFFFF',
@@ -440,13 +456,14 @@ const styles = StyleSheet.create({
   previewLabel: {
     fontSize: 11,
     color: '#10B981',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
     marginBottom: 6,
   },
   previewArabic: {
     color: '#FFFFFF',
     fontFamily: 'AlMajeed',
     textAlign: 'center',
+    letterSpacing: 1.0,
   },
   resetButton: {
     flexDirection: 'row',
@@ -462,7 +479,7 @@ const styles = StyleSheet.create({
   resetButtonText: {
     color: '#F87171',
     fontSize: 13,
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   infoBox: {
     alignItems: 'center',
@@ -472,12 +489,12 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 12,
     color: '#64748B',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
   },
   infoSubtext: {
     fontSize: 11,
     color: '#475569',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 3,
   },
 });

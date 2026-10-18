@@ -18,7 +18,7 @@ const defaultSettings: AppSettings = {
   showOrtho: true,
   showFazilat: true,
   arabicFontSize: 26,
-  arabicFont: 'AlMajeed',
+  arabicFont: 'noorehuda',
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);

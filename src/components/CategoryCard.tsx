@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { CategoryIcon } from './CategoryIcon';
 import { Category } from '../types/dua';
 import { useDuaProgress } from '../context/DuaProgressContext';
 import { ProgressBar } from './ProgressBar';
@@ -27,19 +28,15 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress })
         <View style={styles.headerRow}>
           <View style={styles.iconAndTitle}>
             <View style={[styles.iconContainer, isCompleted && styles.iconContainerCompleted]}>
-              <Ionicons
-                name={category.icon as any}
+              <CategoryIcon
+                categoryId={category.id}
+                name={category.icon}
                 size={24}
                 color={isCompleted ? '#34D399' : '#10B981'}
               />
             </View>
             <View style={styles.textContainer}>
-              <View style={styles.titleRow}>
-                <Text style={styles.title}>{category.titleBangla}</Text>
-                <View style={styles.badgePill}>
-                  <Text style={styles.badgeText}>{category.badge}</Text>
-                </View>
-              </View>
+              <Text style={styles.title}>{category.titleBangla}</Text>
               <Text style={styles.subtitle} numberOfLines={1}>
                 {category.subtitleBangla}
               </Text>
@@ -76,9 +73,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress })
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#111D19',
-    borderRadius: 18,
-    marginHorizontal: 20,
-    marginBottom: 14,
+    borderRadius: 14,
+    marginHorizontal: 12,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#192C25',
     overflow: 'hidden',
@@ -88,7 +85,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F1A16',
   },
   content: {
-    padding: 18,
+    padding: 12,
   },
   headerRow: {
     flexDirection: 'row',
@@ -118,32 +115,16 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 3,
-  },
   title: {
     fontSize: 17,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_700Bold',
-  },
-  badgePill: {
-    backgroundColor: '#192C25',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  badgeText: {
-    fontSize: 11,
-    color: '#10B981',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_700Bold',
+    marginBottom: 3,
   },
   subtitle: {
     fontSize: 12,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
   },
   chevronBox: {
     marginLeft: 8,
@@ -163,12 +144,12 @@ const styles = StyleSheet.create({
   progressCountText: {
     fontSize: 12,
     color: '#CBD5E1',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
   },
   percentageText: {
     fontSize: 12,
     color: '#10B981',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   percentageTextCompleted: {
     color: '#34D399',

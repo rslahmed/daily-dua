@@ -4,6 +4,7 @@ import { Category, CategoryId } from '../types/dua';
 import { OverallProgressCard } from '../components/OverallProgressCard';
 import { CategoryCard } from '../components/CategoryCard';
 import { useSettings } from '../context/SettingsContext';
+import { formatArabicText } from '../utils/text';
 import categoriesDataRaw from '../data/categories.json';
 
 const categories: Category[] = categoriesDataRaw as Category[];
@@ -41,8 +42,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
 
       {/* Islamic Quote Card */}
       <View style={styles.quoteCard}>
-        <Text style={[styles.quoteArabic, { fontFamily: arabicFont }]}>
-          أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
+        <Text style={[styles.quoteArabic, { fontFamily: arabicFont, letterSpacing: 1.0 }]}>
+          {formatArabicText('أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ')}
         </Text>
         <Text style={styles.quoteBangla}>
           "জেনে রেখো, একমাত্র আল্লাহর স্মরণেই অন্তরসমূহ প্রশান্তি লাভ করে।"
@@ -62,27 +63,27 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   sectionHeader: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 12,
+    paddingHorizontal: 12,
+    marginTop: 14,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
   },
   sectionSubtitle: {
     fontSize: 12,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 2,
   },
   quoteCard: {
     backgroundColor: '#0D1613',
-    borderRadius: 16,
-    padding: 18,
-    marginHorizontal: 20,
-    marginTop: 14,
+    borderRadius: 14,
+    padding: 14,
+    marginHorizontal: 12,
+    marginTop: 10,
     borderWidth: 1,
     borderColor: '#192C25',
     alignItems: 'center',
@@ -93,18 +94,19 @@ const styles = StyleSheet.create({
     fontFamily: 'AlMajeed',
     textAlign: 'center',
     marginBottom: 8,
+    letterSpacing: 1.0,
   },
   quoteBangla: {
     fontSize: 13,
     color: '#CBD5E1',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
     textAlign: 'center',
     lineHeight: 20,
   },
   quoteSource: {
     fontSize: 11,
     color: '#6EE7B7',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 6,
   },
 });

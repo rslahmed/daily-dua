@@ -52,10 +52,10 @@ export const OverallProgressCard: React.FC = () => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#111D19',
-    borderRadius: 16,
-    padding: 16,
-    marginHorizontal: 20,
-    marginTop: 16,
+    borderRadius: 14,
+    padding: 12,
+    marginHorizontal: 12,
+    marginTop: 12,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: '#1C332A',
@@ -87,12 +87,12 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 15,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   cardSubtitle: {
     fontSize: 12,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     marginTop: 1,
   },
   percentageBadge: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   percentageText: {
     color: '#34D399',
     fontSize: 14,
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
   },
   progressSection: {
     marginTop: 14,
@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
   resetNoticeText: {
     fontSize: 11,
     color: '#6EE7B7',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
   },
 });

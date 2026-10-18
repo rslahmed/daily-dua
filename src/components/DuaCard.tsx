@@ -5,6 +5,7 @@ import { Dua } from '../types/dua';
 import { useDuaProgress } from '../context/DuaProgressContext';
 import { useSettings } from '../context/SettingsContext';
 import { toBanglaNumber } from '../utils/date';
+import { formatArabicText } from '../utils/text';
 
 interface DuaCardProps {
   dua: Dua;
@@ -48,11 +49,12 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
             {
               fontFamily: arabicFont,
               fontSize: arabicFontSize,
-              lineHeight: Math.round(arabicFontSize * 2.0),
+              lineHeight: Math.round(arabicFontSize * 2.5),
+              letterSpacing: 1.0,
             },
           ]}
         >
-          {dua.arabic}
+          {formatArabicText(dua.arabic)}
         </Text>
       </View>
 
@@ -120,10 +122,10 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#111D19',
-    borderRadius: 18,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 18,
+    borderRadius: 14,
+    marginHorizontal: 12,
+    marginBottom: 12,
+    padding: 12,
     borderWidth: 1,
     borderColor: '#1C332A',
   },
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 14,
+    marginBottom: 12,
     gap: 8,
   },
   headerLeft: {
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
   serialText: {
     fontSize: 13,
     color: '#94A3B8',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   serialTextRead: {
     color: '#34D399',
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
   duaTitle: {
     fontSize: 16,
     color: '#FFFFFF',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
     flex: 1,
   },
   repetitionBadge: {
@@ -185,23 +187,24 @@ const styles = StyleSheet.create({
   repetitionText: {
     fontSize: 12,
     color: '#34D399',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   arabicContainer: {
-    paddingTop: 4,
-    paddingBottom: 16,
-    marginBottom: 16,
+    paddingTop: 2,
+    paddingBottom: 12,
+    marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#1C332A',
   },
   arabicText: {
     color: '#FFFFFF',
-    fontFamily: 'AlMajeed',
+    fontFamily: 'noorehuda',
     textAlign: 'right',
     writingDirection: 'rtl',
+    letterSpacing: 1.0,
   },
   sectionRow: {
-    marginBottom: 12,
+    marginBottom: 10,
   },
   sectionContent: {
     fontSize: 14,
@@ -209,27 +212,27 @@ const styles = StyleSheet.create({
   },
   labelUccharon: {
     color: '#34D399',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
     fontSize: 14,
   },
   textUccharon: {
     color: '#E2E8F0',
-    fontFamily: 'HindSiliguri_500Medium',
+    fontFamily: 'NotoSansBengali_500Medium',
   },
   labelOrtho: {
     color: '#10B981',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
     fontSize: 14,
   },
   textOrtho: {
     color: '#CBD5E1',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
   },
   fazilatBox: {
     backgroundColor: 'rgba(16, 185, 129, 0.08)',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
     borderLeftWidth: 3,
     borderLeftColor: '#10B981',
   },
@@ -240,24 +243,24 @@ const styles = StyleSheet.create({
   },
   labelFazilat: {
     color: '#34D399',
-    fontFamily: 'HindSiliguri_700Bold',
+    fontFamily: 'NotoSansBengali_700Bold',
     fontSize: 13,
   },
   textFazilat: {
     color: '#E2E8F0',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     fontSize: 13,
     lineHeight: 21,
   },
   referenceRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 16,
-    paddingTop: 4,
+    marginBottom: 12,
+    paddingTop: 2,
   },
   referenceText: {
     color: '#6EE7B7',
-    fontFamily: 'HindSiliguri_400Regular',
+    fontFamily: 'NotoSansBengali_400Regular',
     fontSize: 12,
     lineHeight: 18,
     flex: 1,
@@ -265,7 +268,7 @@ const styles = StyleSheet.create({
   footerRow: {
     borderTopWidth: 1,
     borderTopColor: '#172A22',
-    paddingTop: 12,
+    paddingTop: 10,
   },
   readButton: {
     flexDirection: 'row',
@@ -285,7 +288,7 @@ const styles = StyleSheet.create({
   readButtonText: {
     fontSize: 13,
     color: '#CBD5E1',
-    fontFamily: 'HindSiliguri_600SemiBold',
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   readButtonTextActive: {
     color: '#FFFFFF',
