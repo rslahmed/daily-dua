@@ -12,16 +12,14 @@ interface DuaCardProps {
 }
 
 export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
-  const { isDuaRead, toggleDuaRead, getDuaTapCount, incrementDuaTap } = useDuaProgress();
+  const { isDuaRead, toggleDuaRead } = useDuaProgress();
   const { showUccharon, showOrtho, showFazilat, arabicFontSize, arabicFont } = useSettings();
 
   const isRead = isDuaRead(dua.id);
-  const currentTaps = getDuaTapCount(dua.id);
-  const targetTaps = dua.repetitionCount;
 
   return (
     <View style={[styles.card, isRead && styles.cardRead]}>
-      {/* Top Header: Serial & Title & Repetition Badge */}
+      {/* Top Header: Serial & Title & Repetition Tag */}
       <View style={styles.cardHeader}>
         <View style={styles.headerLeft}>
           <View style={[styles.serialBadge, isRead && styles.serialBadgeRead]}>
@@ -34,24 +32,12 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
           </Text>
         </View>
 
-        {/* Repetition Count Badge with Interactive Tap */}
-        <TouchableOpacity
-          style={[styles.repetitionBadge, isRead && styles.repetitionBadgeRead]}
-          onPress={() => incrementDuaTap(dua)}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={isRead ? 'checkmark-circle' : 'repeat'}
-            size={14}
-            color={isRead ? '#34D399' : '#10B981'}
-            style={{ marginRight: 4 }}
-          />
-          <Text style={[styles.repetitionText, isRead && styles.repetitionTextRead]}>
-            {targetTaps > 1
-              ? `${toBanglaNumber(currentTaps)}/${toBanglaNumber(targetTaps)} বার`
-              : dua.repetitionText}
+        {/* Repetition Tag (Static text-only) */}
+        <View style={styles.repetitionBadge}>
+          <Text style={styles.repetitionText}>
+            {dua.repetitionText}
           </Text>
-        </TouchableOpacity>
+        </View>
       </View>
 
       {/* Part 1: Arabic Text */}
@@ -101,11 +87,11 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
         </View>
       )}
 
-      {/* Part 5: রেফারেন্স (Reference) */}
+      {/* Part 5: Reference */}
       {dua.referenceBangla && (
         <View style={styles.referenceRow}>
-          <Ionicons name="bookmark-outline" size={13} color="#6EE7B7" style={{ marginRight: 5 }} />
-          <Text style={styles.referenceText}>রেফারেন্স: {dua.referenceBangla}</Text>
+          <Ionicons name="bookmark-outline" size={13} color="#6EE7B7" style={{ marginTop: 2, marginRight: 6 }} />
+          <Text style={styles.referenceText}>{dua.referenceBangla}</Text>
         </View>
       )}
 
@@ -187,35 +173,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   repetitionBadge: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(16, 185, 129, 0.12)',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: 'rgba(16, 185, 129, 0.3)',
-  },
-  repetitionBadgeRead: {
-    backgroundColor: 'rgba(52, 211, 153, 0.2)',
-    borderColor: '#34D399',
   },
   repetitionText: {
     fontSize: 12,
     color: '#34D399',
     fontFamily: 'HindSiliguri_600SemiBold',
   },
-  repetitionTextRead: {
-    color: '#6EE7B7',
-  },
   arabicContainer: {
-    backgroundColor: '#0A120F',
-    borderRadius: 14,
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#192C25',
+    paddingTop: 4,
+    paddingBottom: 16,
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1C332A',
   },
   arabicText: {
     color: '#FFFFFF',
@@ -274,7 +251,7 @@ const styles = StyleSheet.create({
   },
   referenceRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 16,
     paddingTop: 4,
   },
@@ -282,6 +259,8 @@ const styles = StyleSheet.create({
     color: '#6EE7B7',
     fontFamily: 'HindSiliguri_400Regular',
     fontSize: 12,
+    lineHeight: 18,
+    flex: 1,
   },
   footerRow: {
     borderTopWidth: 1,

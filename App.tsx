@@ -4,12 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import {
-  HindSiliguri_400Regular,
-  HindSiliguri_500Medium,
-  HindSiliguri_600SemiBold,
-  HindSiliguri_700Bold,
-} from '@expo-google-fonts/hind-siliguri';
 
 import { SettingsProvider } from './src/context/SettingsContext';
 import { DuaProgressProvider } from './src/context/DuaProgressContext';
@@ -66,10 +60,10 @@ export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     AlMajeed: require('./assets/fonts/AlMajeed.ttf'),
     Hafs: require('./assets/fonts/hafs.ttf'),
-    HindSiliguri_400Regular,
-    HindSiliguri_500Medium,
-    HindSiliguri_600SemiBold,
-    HindSiliguri_700Bold,
+    HindSiliguri_400Regular: require('./assets/fonts/HindSiliguri-Regular.ttf'),
+    HindSiliguri_500Medium: require('./assets/fonts/HindSiliguri-Medium.ttf'),
+    HindSiliguri_600SemiBold: require('./assets/fonts/HindSiliguri-SemiBold.ttf'),
+    HindSiliguri_700Bold: require('./assets/fonts/HindSiliguri-Bold.ttf'),
   });
 
   useEffect(() => {
