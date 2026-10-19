@@ -9,7 +9,9 @@ import {
   BookOpen,
   LogOut,
   FolderPlus,
-  ExternalLink,
+  Sun,
+  Moon,
+  ChevronRight,
 } from 'lucide-react';
 import { Category, Dua } from '../types/dua';
 import {
@@ -62,6 +64,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       }
     });
   }, []);
+
+  const renderCategoryIcon = (category: Category) => {
+    if (category.icon?.includes('sun') || category.id === 'sokal') {
+      return <Sun className="w-6 h-6 text-[#FBBF24]" />;
+    }
+    if (category.icon?.includes('moon') || category.id === 'sondha') {
+      return <Moon className="w-6 h-6 text-[#60A5FA]" />;
+    }
+    return <BookOpen className="w-6 h-6 text-[#34D399]" />;
+  };
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -277,12 +289,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       )}
 
       {/* Admin Top Navigation */}
-      <div className="bg-[#111D19] border border-[#192C25] rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center space-x-3">
+      <div className="bg-[#111D19] border border-[#1E332B] rounded-2xl p-4 md:p-5 flex flex-wrap items-center justify-between gap-4 shadow-lg shadow-black/20">
+        <div className="flex items-center space-x-3.5">
           {selectedCategory ? (
             <button
               onClick={() => setSelectedCategory(null)}
-              className="p-2 rounded-xl bg-[#0D1613] border border-[#192C25] text-[#34D399] hover:bg-[#162721] transition-colors flex items-center space-x-1.5 text-xs font-semibold"
+              className="px-3.5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-[#34D399] hover:text-white hover:bg-[#1E3A2F] transition-all flex items-center space-x-2 text-xs md:text-sm font-semibold active:scale-95 shadow-sm"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>ক্যাটাগরি তালিকায় ফিরুন</span>
@@ -290,18 +302,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
           ) : (
             <button
               onClick={onBackToApp}
-              className="p-2 rounded-xl bg-[#0D1613] border border-[#192C25] text-[#94A3B8] hover:text-white transition-colors flex items-center space-x-1 text-xs"
+              className="px-3.5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-[#CBD5E1] hover:text-white hover:bg-[#1E3A2F] transition-all flex items-center space-x-2 text-xs md:text-sm font-semibold active:scale-95 shadow-sm"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>মূল অ্যাপ</span>
+              <span>মূল অ্যাপে ফিরুন</span>
             </button>
           )}
 
           <div>
-            <h2 className="text-base font-bold text-white leading-tight">
+            <h2 className="text-base md:text-lg font-bold text-white leading-tight">
               {selectedCategory ? `${selectedCategory.nameBangla} — দোয়াসমূহ` : 'অ্যাডমিন ড্যাশবোর্ড'}
             </h2>
-            <p className="text-[11px] text-[#34D399]">
+            <p className="text-xs text-[#34D399] mt-0.5">
               {selectedCategory
                 ? `${selectedCategory.hasProgress ? 'দৈনিক ট্র্যাকিং সহ ক্যাটাগরি' : 'সাধারণ পঠন ক্যাটাগরি'} (${toBanglaNumber(duas.length)}টি দোয়া)`
                 : 'প্রথমে ক্যাটাগরি নির্বাচন করুন, তারপর দোয়া পরিচালনা করুন'}
@@ -309,11 +321,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2.5">
           {selectedCategory ? (
             <button
               onClick={handleOpenAddDua}
-              className="px-3.5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-black text-xs font-bold transition-all flex items-center space-x-1.5"
+              className="px-4 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold transition-all shadow-md shadow-[#10B981]/25 flex items-center space-x-2 active:scale-95"
             >
               <Plus className="w-4 h-4" />
               <span>নতুন দোয়া যোগ করুন</span>
@@ -330,7 +342,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 });
                 setIsCategoryModalOpen(true);
               }}
-              className="px-3.5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-black text-xs font-bold transition-all flex items-center space-x-1.5"
+              className="px-4 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold transition-all shadow-md shadow-[#10B981]/25 flex items-center space-x-2 active:scale-95"
             >
               <FolderPlus className="w-4 h-4" />
               <span>নতুন ক্যাটাগরি যোগ করুন</span>
@@ -339,10 +351,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
 
           <button
             onClick={handleLogout}
-            className="p-2 rounded-xl bg-[#0D1613] border border-[#192C25] text-red-400 hover:bg-red-950/30 transition-colors"
+            className="px-3.5 py-2.5 rounded-xl bg-red-950/25 border border-red-900/40 text-red-400 hover:text-red-200 hover:bg-red-900/40 transition-all flex items-center space-x-1.5 text-xs font-semibold active:scale-95 shadow-sm"
             title="লগআউট"
           >
             <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">লগআউট</span>
           </button>
         </div>
       </div>
@@ -351,7 +364,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       {!selectedCategory ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h3 className="text-base font-bold text-white">
+            <h3 className="text-base md:text-lg font-bold text-white">
               ১. ক্যাটাগরি নির্বাচন করুন ({toBanglaNumber(categories.length)}টি)
             </h3>
             <span className="text-xs text-[#94A3B8]">যেকোনো ক্যাটাগরিতে ক্লিক করে দোয়া যোগ/এডিট করুন</span>
@@ -360,22 +373,30 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
           {isLoading ? (
             <div className="py-12 text-center text-[#94A3B8] text-sm">লোড হচ্ছে...</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.map((cat) => (
                 <div
                   key={cat.id}
-                  className="bg-[#111D19] border border-[#192C25] hover:border-[#10B981]/50 rounded-2xl p-4 transition-all group"
+                  onClick={() => loadCategoryDuas(cat)}
+                  className="bg-[#111D19] border border-[#1E332B] hover:border-[#10B981]/60 rounded-2xl p-5 transition-all duration-200 group flex flex-col justify-between shadow-lg shadow-black/20 hover:shadow-[#10B981]/5 hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="text-base font-bold text-white group-hover:text-[#34D399] transition-colors">
-                        {cat.nameBangla || cat.titleBangla}
-                      </h4>
-                      <p className="text-xs text-[#94A3B8] mt-0.5 line-clamp-1">{cat.subtitleBangla || '—'}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start space-x-3.5 min-w-0 flex-1">
+                      <div className="w-12 h-12 rounded-2xl bg-[#0D1613] border border-[#1E332B] group-hover:border-[#10B981]/40 flex items-center justify-center flex-shrink-0 transition-colors">
+                        {renderCategoryIcon(cat)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-base md:text-lg font-bold text-white group-hover:text-[#34D399] transition-colors leading-snug">
+                          {cat.nameBangla || cat.titleBangla}
+                        </h4>
+                        <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2 leading-relaxed">
+                          {cat.subtitleBangla || cat.timeBangla || 'কোনো বিবরণ নেই'}
+                        </p>
+                      </div>
                     </div>
 
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full border flex-shrink-0 ${
                         cat.hasProgress
                           ? 'bg-[#10B981]/15 border-[#10B981]/30 text-[#34D399]'
                           : 'bg-[#1E293B] border-[#334155] text-[#94A3B8]'
@@ -385,37 +406,47 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#172721]">
-                    <span className="text-xs text-[#34D399] font-medium">
-                      মোট {toBanglaNumber(cat.totalDuas || 0)}টি দোয়া
-                    </span>
+                  <div className="mt-5 pt-4 border-t border-[#1C332A] flex flex-wrap items-center justify-between gap-3">
+                    <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#0D1613] border border-[#1E332B] text-xs font-semibold text-[#34D399]">
+                      <BookOpen className="w-3.5 h-3.5 text-[#10B981]" />
+                      <span>মোট {toBanglaNumber(cat.totalDuas || 0)}টি দোয়া</span>
+                    </div>
 
-                    <div className="flex items-center space-x-1.5">
+                    <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setEditingCategory(cat);
                           setIsCategoryModalOpen(true);
                         }}
-                        className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#162721] transition-colors"
-                        title="এডিট"
+                        className="px-3 py-2 rounded-xl bg-[#162822] hover:bg-[#1E3A2F] border border-[#244237] hover:border-[#10B981]/60 text-[#CBD5E1] hover:text-white text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
+                        title="ক্যাটাগরি সম্পাদনা"
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
+                        <Edit2 className="w-3.5 h-3.5 text-[#34D399]" />
+                        <span>এডিট</span>
                       </button>
 
                       <button
-                        onClick={() => handleDeleteCategory(cat.id, cat.nameBangla || cat.titleBangla || '')}
-                        className="p-1.5 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors"
-                        title="ডিলিট"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteCategory(cat.id, cat.nameBangla || cat.titleBangla || '');
+                        }}
+                        className="px-3 py-2 rounded-xl bg-red-950/25 hover:bg-red-950/50 border border-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-200 text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
+                        title="ক্যাটাগরি মুছে ফেলুন"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
+                        <span>মুছুন</span>
                       </button>
 
                       <button
-                        onClick={() => loadCategoryDuas(cat)}
-                        className="px-2.5 py-1 rounded-lg bg-[#065F46] hover:bg-[#10B981] hover:text-black text-white text-xs font-semibold transition-all flex items-center space-x-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          loadCategoryDuas(cat);
+                        }}
+                        className="px-3.5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs font-bold transition-all flex items-center space-x-1.5 shadow-md shadow-[#10B981]/20 active:scale-95"
                       >
                         <span>দোয়া দেখুন</span>
-                        <ExternalLink className="w-3 h-3" />
+                        <ChevronRight className="w-4 h-4 text-[#0A0F0D]" />
                       </button>
                     </div>
                   </div>
@@ -428,14 +459,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
         /* VIEW 2: Selected Category's Duas List (Second step) */
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h3 className="text-base font-bold text-white">
+            <h3 className="text-base md:text-lg font-bold text-white">
               "{selectedCategory.nameBangla}" ক্যাটাগরির দোয়া সমূহ ({toBanglaNumber(duas.length)}টি)
             </h3>
             <button
               onClick={handleOpenAddDua}
-              className="text-xs text-[#10B981] hover:underline font-semibold flex items-center space-x-1"
+              className="px-3.5 py-2 rounded-xl bg-[#10B981]/15 border border-[#10B981]/30 hover:bg-[#10B981]/25 text-[#34D399] hover:text-white text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-sm"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               <span>এই ক্যাটাগরিতে নতুন দোয়া যোগ করুন</span>
             </button>
           </div>
@@ -443,62 +474,79 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
           {isLoading ? (
             <div className="py-12 text-center text-[#94A3B8] text-sm">লোড হচ্ছে...</div>
           ) : duas.length === 0 ? (
-            <div className="bg-[#111D19] border border-[#192C25] rounded-2xl p-8 text-center space-y-3">
-              <BookOpen className="w-8 h-8 text-[#94A3B8] mx-auto" />
+            <div className="bg-[#111D19] border border-[#1E332B] rounded-2xl p-8 text-center space-y-3">
+              <BookOpen className="w-10 h-10 text-[#94A3B8] mx-auto opacity-60" />
               <p className="text-sm text-white font-medium">এই ক্যাটাগরিতে এখনো কোনো দোয়া যুক্ত করা হয়নি।</p>
               <button
                 onClick={handleOpenAddDua}
-                className="px-4 py-2 rounded-xl bg-[#10B981] text-black text-xs font-bold transition-all inline-flex items-center space-x-1.5"
+                className="px-5 py-2.5 rounded-xl bg-[#10B981] text-[#0A0F0D] text-xs font-bold transition-all inline-flex items-center space-x-2 shadow-md shadow-[#10B981]/25"
               >
                 <Plus className="w-4 h-4" />
                 <span>প্রথম দোয়াটি যুক্ত করুন</span>
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               {duas.map((dua, index) => (
                 <div
                   key={dua.id}
-                  className="bg-[#111D19] border border-[#192C25] hover:border-[#1E3A2F] rounded-2xl p-4 transition-all"
+                  className="bg-[#111D19] border border-[#1E332B] hover:border-[#10B981]/50 rounded-2xl p-4 md:p-5 transition-all shadow-md"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start space-x-2.5">
-                      <span className="w-6 h-6 rounded-full bg-[#162721] text-xs font-bold text-[#34D399] flex items-center justify-center mt-0.5">
+                    <div className="flex items-start space-x-3 flex-1 min-w-0">
+                      <span className="w-8 h-8 rounded-xl bg-[#182C24] border border-[#244237] text-xs font-bold text-[#34D399] flex items-center justify-center flex-shrink-0 mt-0.5">
                         {toBanglaNumber(index + 1)}
                       </span>
-                      <div>
-                        <h4 className="text-base font-bold text-white">{dua.titleBangla}</h4>
-                        <span className="inline-block text-[11px] font-semibold text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded mt-0.5">
-                          {toBanglaNumber(dua.repetitionCount)} বার পাঠ্য
-                        </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
+                          <h4 className="text-base md:text-lg font-bold text-white leading-snug">
+                            {dua.titleBangla}
+                          </h4>
+                          <span className="inline-flex items-center text-xs font-bold text-[#34D399] bg-[#10B981]/15 border border-[#10B981]/30 px-2.5 py-0.5 rounded-lg">
+                            {toBanglaNumber(dua.repetitionCount)} বার পাঠ্য
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-1 flex-shrink-0">
+                    <div className="flex items-center space-x-2 flex-shrink-0">
                       <button
                         onClick={() => handleOpenEditDua(dua)}
-                        className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#162721] transition-colors"
-                        title="এডিট"
+                        className="px-3 py-1.5 rounded-xl bg-[#162822] hover:bg-[#1E3A2F] border border-[#244237] hover:border-[#10B981]/60 text-[#CBD5E1] hover:text-white text-xs font-semibold flex items-center space-x-1.5 transition-all active:scale-95 shadow-sm"
+                        title="দোয়া সম্পাদনা"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5 text-[#34D399]" />
+                        <span>এডিট</span>
                       </button>
                       <button
                         onClick={() => handleDeleteDua(dua.id, dua.titleBangla)}
-                        className="p-1.5 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors"
-                        title="মুছে ফেলুন"
+                        className="px-3 py-1.5 rounded-xl bg-red-950/25 hover:bg-red-950/50 border border-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-200 text-xs font-semibold flex items-center space-x-1.5 transition-all active:scale-95 shadow-sm"
+                        title="দোয়া মুছে ফেলুন"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>মুছুন</span>
                       </button>
                     </div>
                   </div>
 
-                  <p className="font-arabic text-[#34D399] text-base leading-loose mt-2 line-clamp-2">
-                    {dua.arabic}
-                  </p>
+                  {/* Arabic text snippet box */}
+                  <div className="mt-3.5 p-3.5 rounded-xl bg-[#0D1613] border border-[#182A22]">
+                    <p className="font-arabic text-[#34D399] text-base md:text-lg leading-loose line-clamp-2" dir="rtl">
+                      {dua.arabic}
+                    </p>
+                  </div>
 
-                  <p className="text-xs text-[#94A3B8] mt-2 line-clamp-1">
-                    <span className="text-[#34D399] font-medium">উচ্চারণ:</span> {dua.pronunciationBangla}
-                  </p>
+                  {/* Pronunciation & Meaning Preview */}
+                  {dua.pronunciationBangla && (
+                    <p className="text-xs md:text-sm text-[#CBD5E1] mt-2.5 line-clamp-1 leading-relaxed">
+                      <span className="text-[#34D399] font-bold">উচ্চারণ:</span> {dua.pronunciationBangla}
+                    </p>
+                  )}
+                  {dua.meaningBangla && (
+                    <p className="text-xs text-[#94A3B8] mt-1.5 line-clamp-1 leading-relaxed">
+                      <span className="text-[#10B981] font-semibold">অর্থ:</span> {dua.meaningBangla}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -571,17 +619,17 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 />
               </div>
 
-              <div className="flex justify-end space-x-2 pt-3 border-t border-[#172721]">
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#1C332A]">
                 <button
                   type="button"
                   onClick={() => setIsCategoryModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#94A3B8] hover:bg-[#162721]"
+                  className="px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-[#CBD5E1] bg-[#162822] border border-[#244237] hover:bg-[#1E3A2F] hover:text-white transition-all active:scale-95"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-black text-xs font-bold transition-all"
+                  className="px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold shadow-md shadow-[#10B981]/25 transition-all active:scale-95"
                 >
                   সংরক্ষণ করুন
                 </button>
@@ -698,20 +746,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
               </div>
 
               {/* Multi-Category Selector */}
-              <div className="p-3 rounded-xl bg-[#0D1613] border border-[#192C25]">
-                <label className="text-xs font-semibold text-[#10B981] block mb-2">
+              <div className="p-3.5 rounded-xl bg-[#0D1613] border border-[#1E332B]">
+                <label className="text-xs font-semibold text-[#10B981] block mb-2.5">
                   কোন কোন ক্যাটাগরিতে এই দোয়াটি থাকবে (একাধিক ক্যাটাগরি নির্বাচন করা যাবে):
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   {categories.map((c) => {
                     const isSelected = editingDua?.categoryIds?.includes(c.id) || false;
                     return (
                       <label
                         key={c.id}
-                        className={`flex items-center space-x-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
+                        className={`flex items-center space-x-2.5 p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
                           isSelected
-                            ? 'bg-[#065F46]/40 border-[#10B981] text-white'
-                            : 'bg-[#111D19] border-[#192C25] text-[#94A3B8]'
+                            ? 'bg-[#10B981]/15 border-[#10B981] text-white shadow-sm'
+                            : 'bg-[#111D19] border-[#1E332B] text-[#94A3B8] hover:border-[#10B981]/40'
                         }`}
                       >
                         <input
@@ -733,17 +781,17 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-3 border-t border-[#172721]">
+              <div className="flex justify-end space-x-3 pt-4 border-t border-[#1C332A]">
                 <button
                   type="button"
                   onClick={() => setIsDuaModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#94A3B8] hover:bg-[#162721]"
+                  className="px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-[#CBD5E1] bg-[#162822] border border-[#244237] hover:bg-[#1E3A2F] hover:text-white transition-all active:scale-95"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-black text-xs font-bold transition-all"
+                  className="px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold shadow-md shadow-[#10B981]/25 transition-all active:scale-95"
                 >
                   সংরক্ষণ করুন
                 </button>
