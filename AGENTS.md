@@ -23,6 +23,13 @@ npx expo install --fix      # fix incompatible package versions
 
 Run lint and typecheck before declaring any task done.
 
+## Development & Server Rules (IMPORTANT)
+
+- The user already has dev watchers/servers running in their terminal (e.g. `npm run dev`, Vite, Expo, or PHP).
+- **DO NOT** run `npm run dev`, `vite`, `expo start`, or any dev server in the background.
+- **DO NOT** run `npm run build` or any build commands unless the user explicitly requests a production build.
+- All code changes take effect immediately via the user's active watcher on file save.
+
 ## Navigation & Routing
 
 - Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
