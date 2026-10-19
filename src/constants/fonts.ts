@@ -1,3 +1,5 @@
+export * from './typography';
+
 export const FONTS = {
   bangla: {
     regular: 'NotoSansBengali_400Regular',

@@ -1,3 +1,5 @@
+import { ARABIC_TYPOGRAPHY } from '../constants/typography';
+
 /**
  * Enhances Arabic typography by adjusting inter-word spacing.
  * This provides optimal readability across both web and native mobile devices (iOS/Android)
@@ -7,6 +9,6 @@ export function formatArabicText(text?: string): string {
   if (!text) return '';
   return text
     .split('\n')
-    .map((line) => line.trim().replace(/ +/g, '  '))
+    .map((line) => line.trim().replace(/ +/g, ARABIC_TYPOGRAPHY.wordSpacing))
     .join('\n');
 }

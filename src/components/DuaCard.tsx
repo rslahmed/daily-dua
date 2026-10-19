@@ -6,6 +6,7 @@ import { useDuaProgress } from '../context/DuaProgressContext';
 import { useSettings } from '../context/SettingsContext';
 import { toBanglaNumber } from '../utils/date';
 import { formatArabicText } from '../utils/text';
+import { ARABIC_TYPOGRAPHY, getArabicLineHeight } from '../constants/typography';
 
 interface DuaCardProps {
   dua: Dua;
@@ -14,7 +15,7 @@ interface DuaCardProps {
 
 export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
   const { isDuaRead, toggleDuaRead } = useDuaProgress();
-  const { showUccharon, showOrtho, showFazilat, arabicFontSize, arabicFont } = useSettings();
+  const { showUccharon, showOrtho, showFazilat, arabicFontSize } = useSettings();
 
   const isNamaz = dua.categoryId === 'namaz';
   const isRead = !isNamaz && isDuaRead(dua.id);
@@ -48,10 +49,10 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
           style={[
             styles.arabicText,
             {
-              fontFamily: arabicFont,
+              fontFamily: ARABIC_TYPOGRAPHY.fontFamily,
               fontSize: arabicFontSize,
-              lineHeight: Math.round(arabicFontSize * 2.5),
-              letterSpacing: 1.0,
+              lineHeight: getArabicLineHeight(arabicFontSize),
+              letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing,
             },
           ]}
         >
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
     fontFamily: 'noorehuda',
     textAlign: 'right',
     writingDirection: 'rtl',
-    letterSpacing: 1.0,
+    letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing,
   },
   sectionRow: {
     marginBottom: 10,

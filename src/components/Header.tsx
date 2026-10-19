@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getFormattedBanglaDate } from '../utils/date';
 
 interface HeaderProps {
   onOpenSettings: () => void;
@@ -18,8 +17,6 @@ export const Header: React.FC<HeaderProps> = ({
   onBack,
   subtitle,
 }) => {
-  const currentDate = getFormattedBanglaDate();
-
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
@@ -67,13 +64,6 @@ export const Header: React.FC<HeaderProps> = ({
           <Ionicons name="settings-outline" size={22} color="#94A3B8" />
         </TouchableOpacity>
       </View>
-
-      {!showBack && (
-        <View style={styles.dateBanner}>
-          <Ionicons name="calendar-outline" size={14} color="#10B981" style={{ marginRight: 6 }} />
-          <Text style={styles.dateText}>{currentDate}</Text>
-        </View>
-      )}
     </View>
   );
 };
@@ -142,22 +132,5 @@ const styles = StyleSheet.create({
     borderColor: '#1F332E',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  dateBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 12,
-    backgroundColor: '#101B17',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: '#192C25',
-  },
-  dateText: {
-    fontSize: 12,
-    color: '#CBD5E1',
-    fontFamily: 'NotoSansBengali_500Medium',
   },
 });

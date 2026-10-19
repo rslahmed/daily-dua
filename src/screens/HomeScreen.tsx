@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Category, CategoryId } from '../types/dua';
 import { OverallProgressCard } from '../components/OverallProgressCard';
 import { CategoryCard } from '../components/CategoryCard';
-import { useSettings } from '../context/SettingsContext';
 import { formatArabicText } from '../utils/text';
+import { ARABIC_TYPOGRAPHY, getArabicLineHeight } from '../constants/typography';
 import categoriesDataRaw from '../data/categories.json';
 
 const categories: Category[] = categoriesDataRaw as Category[];
@@ -14,8 +14,6 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
-  const { arabicFont } = useSettings();
-
   return (
     <ScrollView
       style={styles.container}
@@ -42,7 +40,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
 
       {/* Islamic Quote Card */}
       <View style={styles.quoteCard}>
-        <Text style={[styles.quoteArabic, { fontFamily: arabicFont, letterSpacing: 1.0 }]}>
+        <Text style={[styles.quoteArabic, { letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing }]}>
           {formatArabicText('أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ')}
         </Text>
         <Text style={styles.quoteBangla}>
@@ -90,11 +88,12 @@ const styles = StyleSheet.create({
   },
   quoteArabic: {
     fontSize: 18,
+    lineHeight: getArabicLineHeight(18),
     color: '#34D399',
-    fontFamily: 'AlMajeed',
+    fontFamily: 'noorehuda',
     textAlign: 'center',
     marginBottom: 8,
-    letterSpacing: 1.0,
+    letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing,
   },
   quoteBangla: {
     fontSize: 13,

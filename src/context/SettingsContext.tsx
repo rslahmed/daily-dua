@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppSettings } from '../types/dua';
+import { ARABIC_TYPOGRAPHY } from '../constants/typography';
 
 interface SettingsContextType extends AppSettings {
   setShowUccharon: (val: boolean) => Promise<void>;
   setShowOrtho: (val: boolean) => Promise<void>;
   setShowFazilat: (val: boolean) => Promise<void>;
   setArabicFontSize: (val: number) => Promise<void>;
-  setArabicFont: (font: AppSettings['arabicFont']) => Promise<void>;
   isSettingsLoaded: boolean;
 }
 
@@ -17,7 +17,7 @@ const defaultSettings: AppSettings = {
   showUccharon: true,
   showOrtho: true,
   showFazilat: true,
-  arabicFontSize: 26,
+  arabicFontSize: ARABIC_TYPOGRAPHY.defaultFontSize,
   arabicFont: 'noorehuda',
 };
 
@@ -39,6 +39,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setSettings((prev) => ({
           ...prev,
           ...parsed,
+          arabicFont: 'noorehuda',
         }));
       }
     } catch (e) {
@@ -73,10 +74,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     await saveSettings({ ...settings, arabicFontSize: val });
   };
 
-  const setArabicFont = async (val: AppSettings['arabicFont']) => {
-    await saveSettings({ ...settings, arabicFont: val });
-  };
-
   return (
     <SettingsContext.Provider
       value={{
@@ -85,7 +82,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setShowOrtho,
         setShowFazilat,
         setArabicFontSize,
-        setArabicFont,
         isSettingsLoaded,
       }}
     >

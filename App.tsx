@@ -80,8 +80,6 @@ function MainContent() {
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     noorehuda: require('./assets/fonts/noorehuda.ttf'),
-    AlMajeed: require('./assets/fonts/AlMajeed.ttf'),
-    Hafs: require('./assets/fonts/hafs.ttf'),
     // Primary reliable Bangla font: Noto Sans Bengali
     NotoSansBengali_400Regular: require('./assets/fonts/NotoSansBengali-Regular.ttf'),
     NotoSansBengali_500Medium: require('./assets/fonts/NotoSansBengali-Medium.ttf'),

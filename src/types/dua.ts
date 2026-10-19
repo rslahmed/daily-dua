@@ -27,12 +27,12 @@ export interface DailyProgressState {
   duaTapCounts: Record<string, number>; // id -> current count
 }
 
-export type ArabicFontChoice = 'noorehuda' | 'AlMajeed' | 'Hafs';
+export type ArabicFontChoice = 'noorehuda';
 
 export interface AppSettings {
   showUccharon: boolean;
   showOrtho: boolean;
   showFazilat: boolean;
   arabicFontSize: number;
-  arabicFont: ArabicFontChoice;
+  arabicFont?: ArabicFontChoice;
 }
