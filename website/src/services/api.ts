@@ -1,6 +1,6 @@
 import { Category, Dua } from '../types/dua';
 
-const API_BASE = './api';
+const API_BASE = '/api';
 
 export function getAdminToken(): string | null {
   return localStorage.getItem('daily_dua_admin_token');
@@ -39,8 +39,8 @@ export async function fetchPublicData(): Promise<{
   } catch (err) {
     console.warn('API sync failed, falling back to local fallback data:', err);
     // Fallback directly to json if api is not running
-    const catRes = await fetch('./api/data/categories.json').catch(() => null);
-    const duaRes = await fetch('./api/data/duas.json').catch(() => null);
+    const catRes = await fetch('/api/data/categories.json').catch(() => null);
+    const duaRes = await fetch('/api/data/duas.json').catch(() => null);
     const categories = catRes ? await catRes.json() : [];
     const rawDuas = duaRes ? await duaRes.json() : [];
     const duas = rawDuas.map((d: any) => ({
