@@ -33,8 +33,12 @@ export const Header: React.FC<HeaderProps> = ({
               <ArrowLeft className="w-5 h-5" />
             </button>
           ) : (
-            <div className="flex items-center space-x-2">
-              <span className="text-xl">🌙</span>
+            <div className="flex items-center space-x-3">
+              <img
+                src="/logo.png"
+                alt="Daily Dua"
+                className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[#10B981]/15 border border-[#10B981]/30 object-contain shadow-sm"
+              />
               <div>
                 <h1 className="text-base font-bold text-white tracking-wide leading-tight">দৈনিক দোয়া</h1>
                 <p className="text-[11px] text-[#34D399] font-medium leading-tight">Daily Dua & Masnoon Azkar</p>

@@ -93,7 +93,10 @@ function AppFooter() {
   return (
     <footer className="border-t border-[#14231E] py-5 text-center text-xs text-[#94A3B8]">
       <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span>🌙 দৈনিক দোয়া (Daily Dua) — সহীহ মাসনূন আমল</span>
+        <span className="inline-flex items-center gap-2">
+          <img src="/logo.png" alt="Daily Dua" className="w-4 h-4 rounded object-contain inline-block" />
+          <span>দৈনিক দোয়া (Daily Dua) — সহীহ মাসনূন আমল</span>
+        </span>
         <button
           onClick={() => navigate(isAdminPath ? '/' : '/admin')}
           className="hover:text-[#34D399] transition-colors"
