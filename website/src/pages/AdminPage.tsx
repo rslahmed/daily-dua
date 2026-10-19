@@ -39,7 +39,7 @@ interface AdminPageProps {
 export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
   const navigate = useNavigate();
   const { categoryId } = useParams<{ categoryId?: string }>();
-  const { refreshData } = useDua();
+  const { categories: contextCategories, refreshData } = useDua();
 
   const handleBackToApp = useCallback(() => {
     if (onBackToApp) {
@@ -55,9 +55,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Data State
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  // Data State - initialize with contextCategories for zero latency
+  const [categories, setCategories] = useState<Category[]>(contextCategories);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(() => {
+    if (categoryId && contextCategories.length > 0) {
+      return contextCategories.find((c) => c.id === categoryId) || null;
+    }
+    return null;
+  });
   const [duas, setDuas] = useState<Dua[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -92,6 +97,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       }
     });
   }, []);
+
+  // Sync context categories if admin categories not yet loaded
+  useEffect(() => {
+    if (categories.length === 0 && contextCategories.length > 0) {
+      setCategories(contextCategories);
+    }
+  }, [contextCategories, categories.length]);
 
   // Prevent background scroll when any modal is active
   useEffect(() => {

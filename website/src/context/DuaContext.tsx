@@ -30,6 +30,8 @@ interface DuaContextType {
 
 const PROGRESS_STORAGE_KEY = '@daily_dua_web_progress';
 const SETTINGS_STORAGE_KEY = '@daily_dua_web_settings';
+const CATEGORIES_CACHE_KEY = '@daily_dua_cached_categories';
+const DUAS_CACHE_KEY = '@daily_dua_cached_duas';
 
 const defaultSettings: AppSettings = {
   showUccharon: true,
@@ -41,9 +43,32 @@ const defaultSettings: AppSettings = {
 const DuaContext = createContext<DuaContextType | undefined>(undefined);
 
 export const DuaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [duas, setDuas] = useState<Dua[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>(() => {
+    try {
+      const stored = localStorage.getItem(CATEGORIES_CACHE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [duas, setDuas] = useState<Dua[]>(() => {
+    try {
+      const stored = localStorage.getItem(DUAS_CACHE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [isLoading, setIsLoading] = useState(() => {
+    try {
+      const stored = localStorage.getItem(CATEGORIES_CACHE_KEY);
+      return !stored || JSON.parse(stored).length === 0;
+    } catch {
+      return true;
+    }
+  });
 
   const [readDuaIds, setReadDuaIds] = useState<string[]>([]);
   const [duaTapCounts, setDuaTapCounts] = useState<Record<string, number>>({});
@@ -59,8 +84,22 @@ export const DuaProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const loadData = async () => {
     try {
       const res = await fetchPublicData();
-      setCategories(res.categories);
-      setDuas(res.duas);
+      if (res.categories && res.categories.length > 0) {
+        setCategories(res.categories);
+        try {
+          localStorage.setItem(CATEGORIES_CACHE_KEY, JSON.stringify(res.categories));
+        } catch {
+          // ignore cache write error
+        }
+      }
+      if (res.duas && res.duas.length > 0) {
+        setDuas(res.duas);
+        try {
+          localStorage.setItem(DUAS_CACHE_KEY, JSON.stringify(res.duas));
+        } catch {
+          // ignore cache write error
+        }
+      }
     } catch (e) {
       console.error('Error loading data:', e);
     } finally {

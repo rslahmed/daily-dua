@@ -16,8 +16,16 @@ export const CategoryDetailPage: React.FC<CategoryDetailPageProps> = ({ category
   const { categoryId: paramCategoryId } = useParams<{ categoryId: string }>();
   const categoryId = propCategoryId || paramCategoryId || '';
 
-  const { categories, duas, isDuaRead, getCategoryProgress } = useDua();
+  const { categories, duas, isLoading, isDuaRead, getCategoryProgress } = useDua();
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
+
+  if (isLoading && categories.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-8 h-8 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const currentCategory = categories.find((c) => c.id === categoryId) || {
     id: categoryId,
