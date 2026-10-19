@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, BookOpen, ChevronRight } from 'lucide-react';
+import { Sun, Moon, BookOpen, Bed, ChevronRight } from 'lucide-react';
 import { Category } from '../types/dua';
 import { ProgressBar } from './ProgressBar';
 import { useDua } from '../context/DuaContext';
@@ -23,6 +23,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onSelect }
     }
     if (category.icon?.includes('moon') || category.id === 'sondha') {
       return <Moon className="w-6 h-6 text-[#60A5FA]" />;
+    }
+    if (category.icon?.includes('bed') || category.id === 'sleep' || category.id === 'ghum') {
+      return <Bed className="w-6 h-6 text-[#A78BFA]" />;
     }
     return <BookOpen className="w-6 h-6 text-[#34D399]" />;
   };

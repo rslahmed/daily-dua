@@ -13,6 +13,7 @@ import {
   FolderPlus,
   Sun,
   Moon,
+  Bed,
   ChevronRight,
   AlertTriangle,
   X,
@@ -123,6 +124,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
     }
     if (category.icon?.includes('moon') || category.id === 'sondha') {
       return <Moon className="w-6 h-6 text-[#60A5FA]" />;
+    }
+    if (category.icon?.includes('bed') || category.id === 'sleep' || category.id === 'ghum') {
+      return <Bed className="w-6 h-6 text-[#A78BFA]" />;
     }
     return <BookOpen className="w-6 h-6 text-[#34D399]" />;
   };
