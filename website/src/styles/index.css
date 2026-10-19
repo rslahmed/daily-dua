@@ -50,19 +50,48 @@
   font-display: swap;
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars - Modern, sleek & transparent track */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #234438 transparent;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0F0D;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #192C25;
-  border-radius: 4px;
+  background: #234438;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #10B981;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #234438 transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #234438;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #10B981;
 }
 

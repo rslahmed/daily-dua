@@ -38,11 +38,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       onClick={onClose}
     >
       <div
-        className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-md p-5 md:p-6 shadow-2xl relative overflow-hidden text-white animate-scale-up"
+        className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl relative overflow-hidden text-white animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#172721]">
+        <div className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-[#172721] flex-shrink-0 bg-[#111D19]">
           <h3 className="text-lg font-bold text-white">অ্যাপ সেটিংস</h3>
           <button
             onClick={onClose}
@@ -52,7 +52,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           </button>
         </div>
 
-        <div className="space-y-5 my-4 max-h-[75vh] overflow-y-auto pr-1">
+        <div className="flex-1 overflow-y-auto px-5 md:px-6 py-4 space-y-5 custom-scrollbar">
           {/* Display Toggles */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold text-[#10B981] uppercase tracking-wider">

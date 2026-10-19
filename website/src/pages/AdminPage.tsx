@@ -656,11 +656,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
             onClick={() => setIsCategoryModalOpen(false)}
           >
             <div
-              className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-md p-5 md:p-6 shadow-2xl text-white relative animate-scale-up"
+              className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl text-white relative animate-scale-up overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-[#1C332A]">
-                <h3 className="text-lg font-bold text-white">
+              <div className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-[#1C332A] flex-shrink-0 bg-[#111D19]">
+                <h3 className="text-base md:text-lg font-bold text-white">
                   {editingCategory?.id ? 'ক্যাটাগরি সম্পাদনা' : 'নতুন ক্যাটাগরি তৈরি'}
                 </h3>
                 <button
@@ -673,65 +673,66 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 </button>
               </div>
 
-            <form onSubmit={handleSaveCategory} className="space-y-4 my-4">
-              <div>
-                <label className="text-xs text-[#94A3B8] block mb-1">ক্যাটাগরির নাম (Title) *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="যেমন: সকালের দোয়া"
-                  value={editingCategory?.nameBangla || ''}
-                  onChange={(e) =>
-                    setEditingCategory({ ...editingCategory, nameBangla: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs text-[#94A3B8] block mb-1">সাবটাইটেল (Subtitle)</label>
-                <textarea
-                  rows={2}
-                  placeholder="যেমন: ফজর হতে সূর্যোদয় পর্যন্ত পাঠ্য দোয়া"
-                  value={editingCategory?.subtitleBangla || ''}
-                  onChange={(e) =>
-                    setEditingCategory({ ...editingCategory, subtitleBangla: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white min-h-[60px] [field-sizing:content] resize-none"
-                  style={{ fieldSizing: 'content' as any }}
-                />
-              </div>
-
-              <div>
-                <label className="text-xs text-[#94A3B8] block mb-1">সময় নির্দেশক (Time text)</label>
-                <input
-                  type="text"
-                  placeholder="যেমন: ফজর পরবর্তী সময়"
-                  value={editingCategory?.timeBangla || ''}
-                  onChange={(e) =>
-                    setEditingCategory({ ...editingCategory, timeBangla: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white"
-                />
-              </div>
-
-              {/* hasProgress Checkbox / Toggle */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#0D1613] border border-[#192C25]">
+              <form id="category-form" onSubmit={handleSaveCategory} className="flex-1 overflow-y-auto px-5 md:px-6 py-4 space-y-4 custom-scrollbar">
                 <div>
-                  <p className="text-sm font-semibold text-white">দৈনিক আমল ট্র্যাকিং (hasProgress)</p>
-                  <p className="text-xs text-[#94A3B8]">কাউন্টার ও প্রগ্রেস বার থাকবে কি না</p>
+                  <label className="text-xs text-[#94A3B8] block mb-1">ক্যাটাগরির নাম (Title) *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="যেমন: সকালের দোয়া"
+                    value={editingCategory?.nameBangla || ''}
+                    onChange={(e) =>
+                      setEditingCategory({ ...editingCategory, nameBangla: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white"
+                  />
                 </div>
-                <input
-                  type="checkbox"
-                  checked={editingCategory?.hasProgress !== false}
-                  onChange={(e) =>
-                    setEditingCategory({ ...editingCategory, hasProgress: e.target.checked })
-                  }
-                  className="w-5 h-5 accent-[#10B981] rounded cursor-pointer"
-                />
-              </div>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#1C332A]">
+                <div>
+                  <label className="text-xs text-[#94A3B8] block mb-1">সাবটাইটেল (Subtitle)</label>
+                  <textarea
+                    rows={2}
+                    placeholder="যেমন: ফজর হতে সূর্যোদয় পর্যন্ত পাঠ্য দোয়া"
+                    value={editingCategory?.subtitleBangla || ''}
+                    onChange={(e) =>
+                      setEditingCategory({ ...editingCategory, subtitleBangla: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white min-h-[60px] [field-sizing:content] resize-none"
+                    style={{ fieldSizing: 'content' as any }}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-[#94A3B8] block mb-1">সময় নির্দেশক (Time text)</label>
+                  <input
+                    type="text"
+                    placeholder="যেমন: ফজর পরবর্তী সময়"
+                    value={editingCategory?.timeBangla || ''}
+                    onChange={(e) =>
+                      setEditingCategory({ ...editingCategory, timeBangla: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white"
+                  />
+                </div>
+
+                {/* hasProgress Checkbox / Toggle */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#0D1613] border border-[#192C25]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">দৈনিক আমল ট্র্যাকিং (hasProgress)</p>
+                    <p className="text-xs text-[#94A3B8]">কাউন্টার ও প্রগ্রেস বার থাকবে কি না</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={editingCategory?.hasProgress !== false}
+                    onChange={(e) =>
+                      setEditingCategory({ ...editingCategory, hasProgress: e.target.checked })
+                    }
+                    className="w-5 h-5 accent-[#10B981] rounded cursor-pointer"
+                  />
+                </div>
+              </form>
+
+              <div className="flex justify-end space-x-3 px-5 md:px-6 py-3.5 border-t border-[#1C332A] flex-shrink-0 bg-[#0E1815]">
                 <button
                   type="button"
                   onClick={() => setIsCategoryModalOpen(false)}
@@ -741,13 +742,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 </button>
                 <button
                   type="submit"
+                  form="category-form"
                   className="px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold shadow-md shadow-[#10B981]/25 transition-all active:scale-95"
                 >
                   সংরক্ষণ করুন
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
         </div>,
         document.body
       )}
@@ -760,11 +761,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
             onClick={() => setIsDuaModalOpen(false)}
           >
             <div
-              className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl text-white relative animate-scale-up"
+              className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-2xl max-h-[88vh] flex flex-col shadow-2xl text-white relative animate-scale-up overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-[#1C332A]">
-                <h3 className="text-lg font-bold text-white">
+              <div className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-[#1C332A] flex-shrink-0 bg-[#111D19]">
+                <h3 className="text-base md:text-lg font-bold text-white">
                   {editingDua?.id ? 'দোয়া সম্পাদনা' : 'নতুন দোয়া যোগ করুন'}
                 </h3>
                 <button
@@ -777,7 +778,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 </button>
               </div>
 
-            <form onSubmit={handleSaveDua} className="space-y-4 my-4">
+              <form id="dua-form" onSubmit={handleSaveDua} className="flex-1 overflow-y-auto px-5 md:px-6 py-4 space-y-4 custom-scrollbar">
               {/* 1. Title */}
               <div>
                 <label className="text-xs text-[#94A3B8] block mb-1">১. দোয়ার শিরোনাম (Title) *</label>
@@ -914,23 +915,24 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                   })}
                 </div>
               </div>
-
-              <div className="flex justify-end space-x-3 pt-4 border-t border-[#1C332A]">
-                <button
-                  type="button"
-                  onClick={() => setIsDuaModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-[#CBD5E1] bg-[#162822] border border-[#244237] hover:bg-[#1E3A2F] hover:text-white transition-all active:scale-95"
-                >
-                  বাতিল
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold shadow-md shadow-[#10B981]/25 transition-all active:scale-95"
-                >
-                  সংরক্ষণ করুন
-                </button>
-              </div>
             </form>
+
+            <div className="flex justify-end space-x-3 px-5 md:px-6 py-3.5 border-t border-[#1C332A] flex-shrink-0 bg-[#0E1815]">
+              <button
+                type="button"
+                onClick={() => setIsDuaModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-[#CBD5E1] bg-[#162822] border border-[#244237] hover:bg-[#1E3A2F] hover:text-white transition-all active:scale-95"
+              >
+                বাতিল
+              </button>
+              <button
+                type="submit"
+                form="dua-form"
+                className="px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs md:text-sm font-bold shadow-md shadow-[#10B981]/25 transition-all active:scale-95"
+              >
+                সংরক্ষণ করুন
+              </button>
+            </div>
           </div>
         </div>,
         document.body
