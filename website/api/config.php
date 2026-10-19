@@ -9,9 +9,9 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // Admin Password for Hidden Admin Portal
-// Default password is 'dua@admin123'
-// You can change this to any password you want.
-define('ADMIN_PASSWORD', getenv('ADMIN_PASSWORD') ?: 'dua@admin123');
+// Default password is 'rsl12345'
+// You can change this to any password you want or set the ADMIN_PASSWORD environment variable.
+define('ADMIN_PASSWORD', getenv('ADMIN_PASSWORD') ?: 'rsl12345');
 
 // Secret key for JWT / Admin Token signing
 define('JWT_SECRET', getenv('JWT_SECRET') ?: 'daily_dua_secret_key_change_me_in_production_2026');

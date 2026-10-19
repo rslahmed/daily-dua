@@ -360,7 +360,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
             type="password"
             value={passwordInput}
             onChange={(e) => setPasswordInput(e.target.value)}
-            placeholder="অ্যাডমিন পাসওয়ার্ড (default: dua@admin123)"
+            placeholder="অ্যাডমিন পাসওয়ার্ড দিন"
             className="w-full px-4 py-3 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] focus:outline-none text-white text-sm"
             autoFocus
           />

@@ -58,8 +58,8 @@ website/
 
 ## 🛡️ Admin Portal
 
-- **URL**: `https://yourdomain.com/#admin` (or click the Shield icon in the top header)
-- **Default Password**: `dua@admin123` (change this in `api/config.php`)
+- **URL**: `https://yourdomain.com/admin` (or click the Shield icon in the top header)
+- **Default Password**: `rsl12345` (you can change this in `api/config.php` or via the `ADMIN_PASSWORD` environment variable)
 - **Workflow**:
   1. **Category Management**: View categories, add or edit name and toggle `hasProgress` (daily routine counter vs plain recitation).
   2. **Select Category**: Click "দোয়া দেখুন" on any category to view and manage its Duas.
