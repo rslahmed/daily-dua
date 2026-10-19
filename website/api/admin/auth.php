@@ -8,7 +8,10 @@ if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true) ?: [];
     $password = isset($input['password']) ? trim($input['password']) : '';
 
-    if ($password === ADMIN_PASSWORD) {
+    $pdo = get_db();
+    $currentPassword = get_admin_password($pdo);
+
+    if ($password === $currentPassword) {
         $token = generate_auth_token();
         echo json_encode([
             'success' => true,

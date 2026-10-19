@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, RotateCcw } from 'lucide-react';
+import { X, RotateCcw, Key, ShieldCheck } from 'lucide-react';
 import { useDua } from '../context/DuaContext';
+import { getAdminToken } from '../services/api';
+import { ChangePasswordModal } from './ChangePasswordModal';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -17,6 +19,8 @@ const fontSizes = [
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { settings, updateSettings, resetTodayProgress } = useDua();
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const isAdmin = Boolean(getAdminToken());
 
   // Prevent background scroll when settings is active
   useEffect(() => {
@@ -156,6 +160,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </div>
           </div>
 
+          {/* Admin Security Section (Only visible when logged in as admin) */}
+          {isAdmin && (
+            <div className="pt-2 border-t border-[#172721] space-y-2.5">
+              <h4 className="text-xs font-semibold text-[#10B981] uppercase tracking-wider flex items-center space-x-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>অ্যাডমিন নিরাপত্তা</span>
+              </h4>
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-[#0D1613] border border-[#1E332B]">
+                <div>
+                  <p className="text-sm font-semibold text-white">অ্যাডমিন পাসওয়ার্ড</p>
+                  <p className="text-xs text-[#94A3B8]">ড্যাশবোর্ডের লগইন পাসওয়ার্ড পরিবর্তন করুন</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsChangePasswordOpen(true)}
+                  className="px-3 py-1.5 rounded-xl bg-[#162822] hover:bg-[#1E3A2F] border border-[#244237] hover:border-[#10B981]/50 text-xs font-semibold text-[#34D399] transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  <span>পরিবর্তন করুন</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Reset Progress */}
           <div className="pt-2 border-t border-[#172721]">
             <button
@@ -173,6 +201,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           </div>
         </div>
       </div>
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+      />
     </div>,
     document.body
   );

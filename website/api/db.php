@@ -127,3 +127,48 @@ function require_admin_auth() {
         exit();
     }
 }
+
+function get_admin_password($pdo = null) {
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare("SELECT setting_value FROM system_settings WHERE setting_key = 'admin_password'");
+            $stmt->execute();
+            $val = $stmt->fetchColumn();
+            if ($val !== false && !empty($val)) {
+                return $val;
+            }
+        } catch (Exception $e) {
+            // fallback
+        }
+    }
+
+    $cfgFile = __DIR__ . '/data/admin_config.json';
+    if (file_exists($cfgFile)) {
+        $cfg = json_decode(file_get_contents($cfgFile), true);
+        if (!empty($cfg['password'])) {
+            return $cfg['password'];
+        }
+    }
+
+    return ADMIN_PASSWORD;
+}
+
+function set_admin_password($newPassword, $pdo = null) {
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare("REPLACE INTO system_settings (setting_key, setting_value) VALUES ('admin_password', :pwd)");
+            $stmt->execute([':pwd' => $newPassword]);
+        } catch (Exception $e) {
+            // fallback
+        }
+    }
+
+    $cfgFile = __DIR__ . '/data/admin_config.json';
+    $cfg = [
+        'password' => $newPassword,
+        'updatedAt' => date('Y-m-d H:i:s')
+    ];
+    file_put_contents($cfgFile, json_encode($cfg, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    return true;
+}
+

@@ -17,7 +17,9 @@ import {
   ChevronRight,
   AlertTriangle,
   X,
+  Key,
 } from 'lucide-react';
+import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import { Category, Dua } from '../types/dua';
 import {
   loginAdmin,
@@ -88,6 +90,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
     title: '',
   });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   // Check auth on mount
   useEffect(() => {
@@ -456,6 +459,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
               <span>নতুন ক্যাটাগরি যোগ করুন</span>
             </button>
           )}
+
+          <button
+            onClick={() => setIsChangePasswordOpen(true)}
+            className="px-3.5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] hover:border-[#10B981]/50 text-[#CBD5E1] hover:text-white hover:bg-[#1E3A2F] transition-all flex items-center space-x-1.5 text-xs font-semibold active:scale-95 shadow-sm"
+            title="পাসওয়ার্ড পরিবর্তন করুন"
+          >
+            <Key className="w-4 h-4 text-[#34D399]" />
+            <span className="hidden sm:inline">পাসওয়ার্ড পরিবর্তন</span>
+          </button>
 
           <button
             onClick={handleLogout}
@@ -1016,6 +1028,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
           </div>,
           document.body
         )}
+
+      {/* Admin Change Password Modal */}
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+        onSuccess={(msg) => showToast(msg || 'পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে')}
+      />
     </div>
   );
 };

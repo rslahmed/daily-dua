@@ -138,3 +138,12 @@ export async function deleteAdminDua(id: string): Promise<any> {
   });
   return res.json();
 }
+
+export async function changeAdminPassword(oldPassword: string, newPassword: string): Promise<{ success: boolean; error?: string; message?: string }> {
+  const res = await fetch(`${API_BASE}/admin/change-password.php`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ oldPassword, newPassword }),
+  });
+  return res.json();
+}
