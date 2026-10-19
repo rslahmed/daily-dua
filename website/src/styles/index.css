@@ -83,3 +83,9 @@
 .emerald-glow-sm {
   box-shadow: 0 0 10px -2px rgba(16, 185, 129, 0.2);
 }
+
+/* Auto-expanding form fields */
+textarea,
+.field-sizing-content {
+  field-sizing: content;
+}

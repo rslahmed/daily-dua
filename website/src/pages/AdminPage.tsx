@@ -613,14 +613,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
 
               <div>
                 <label className="text-xs text-[#94A3B8] block mb-1">সাবটাইটেল (Subtitle)</label>
-                <input
-                  type="text"
+                <textarea
+                  rows={2}
                   placeholder="যেমন: ফজর হতে সূর্যোদয় পর্যন্ত পাঠ্য দোয়া"
                   value={editingCategory?.subtitleBangla || ''}
                   onChange={(e) =>
                     setEditingCategory({ ...editingCategory, subtitleBangla: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white min-h-[60px] [field-sizing:content] resize-none"
+                  style={{ fieldSizing: 'content' as any }}
                 />
               </div>
 
@@ -705,7 +706,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                   placeholder="اللَّهُ لَا إِلٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ..."
                   value={editingDua?.arabic || ''}
                   onChange={(e) => setEditingDua({ ...editingDua, arabic: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-base font-arabic text-[#34D399] leading-loose"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-base font-arabic text-[#34D399] leading-loose min-h-[90px] [field-sizing:content] resize-none"
+                  style={{ fieldSizing: 'content' as any }}
                 />
               </div>
 
@@ -719,7 +721,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                   onChange={(e) =>
                     setEditingDua({ ...editingDua, pronunciationBangla: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white leading-relaxed"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white leading-relaxed min-h-[70px] [field-sizing:content] resize-none"
+                  style={{ fieldSizing: 'content' as any }}
                 />
               </div>
 
@@ -731,7 +734,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                   placeholder="আল্লাহ, তিনি ছাড়া কোনো হক ইলাহ্ নেই। তিনি চিরঞ্জীব..."
                   value={editingDua?.meaningBangla || ''}
                   onChange={(e) => setEditingDua({ ...editingDua, meaningBangla: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white leading-relaxed"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-sm text-white leading-relaxed min-h-[70px] [field-sizing:content] resize-none"
+                  style={{ fieldSizing: 'content' as any }}
                 />
               </div>
 
@@ -743,7 +747,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                   placeholder="সকাল-সন্ধ্যায় পাঠ করলে শয়তান ও জিনের আক্রমণ থেকে নিরাপত্তা লাভ হয়..."
                   value={editingDua?.benefitBangla || ''}
                   onChange={(e) => setEditingDua({ ...editingDua, benefitBangla: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-xs text-white leading-relaxed"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0D1613] border border-[#192C25] focus:border-[#10B981] text-xs md:text-sm text-white leading-relaxed min-h-[70px] [field-sizing:content] resize-none"
+                  style={{ fieldSizing: 'content' as any }}
                 />
               </div>
 
