@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 import { Category, Dua } from '../types/dua';
 import initialCategoriesRaw from '../data/categories.json';
 import initialDuasRaw from '../data/duas.json';
@@ -8,12 +9,21 @@ const CACHED_DUAS_KEY = '@daily_dua_cached_duas';
 const DATA_VERSION_KEY = '@daily_dua_data_version';
 const API_URL_KEY = '@daily_dua_api_url';
 
-// Default API URL (can be customized or pointed to production cPanel domain)
-export const DEFAULT_API_URL = 'https://dailydua.com/api';
+// Local development API URL for testing
+// Android emulator maps 10.0.2.2 to host machine's localhost; iOS simulator / web uses localhost
+export const DEFAULT_API_URL =
+  Platform.OS === 'android'
+    ? 'http://10.0.2.2:8000/api'
+    : 'http://localhost:8000/api';
 
 export async function getApiUrl(): Promise<string> {
   try {
     const custom = await AsyncStorage.getItem(API_URL_KEY);
+    // If old placeholder live URL was cached, clear it so local server is used
+    if (custom && custom.includes('dailydua.com')) {
+      await AsyncStorage.removeItem(API_URL_KEY);
+      return DEFAULT_API_URL;
+    }
     return custom || DEFAULT_API_URL;
   } catch {
     return DEFAULT_API_URL;
