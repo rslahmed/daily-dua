@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useSettings } from '../context/SettingsContext';
 import { useDuaProgress } from '../context/DuaProgressContext';
+import { useDuaData } from '../context/DuaDataContext';
 import { toBanglaNumber } from '../utils/date';
 import { formatArabicText } from '../utils/text';
 import {
@@ -37,6 +38,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
   } = useSettings();
 
   const { resetTodayProgress } = useDuaProgress();
+  const { dataVersion, forceSync, isSyncing, categories, duas } = useDuaData();
+
+  const handleSyncPress = async () => {
+    const res = await forceSync();
+    if (res.success) {
+      Alert.alert(
+        'সিঙ্ক সফল',
+        `সার্ভার থেকে সফলভাবে সিঙ্ক সম্পন্ন হয়েছে। মোট ${toBanglaNumber(categories.length)}টি ক্যাটাগরি ও ${toBanglaNumber(duas.length)}টি দোয়া পাওয়া গেছে।`
+      );
+    } else {
+      Alert.alert(
+        'সিঙ্ক তথ্য',
+        res.error || 'সার্ভারে সংযোগ করা সম্ভব হয়নি। অফলাইনে অ্যাপের সমস্ত ডাটা স্বাভাবিক থাকবে।'
+      );
+    }
+  };
 
   const handleResetProgress = () => {
     Alert.alert(
@@ -181,6 +198,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
                   {formatArabicText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ')}
                 </Text>
               </View>
+            </View>
+
+            {/* Data Sync & Update Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionHeader}>ডাটা সিঙ্ক ও হালনাগাদ</Text>
+              <Text style={styles.sectionDesc}>
+                বর্তমান ডাটা ভার্সন: {toBanglaNumber(dataVersion)} (মোট {toBanglaNumber(categories.length)}টি ক্যাটাগরি, {toBanglaNumber(duas.length)}টি দোয়া)
+              </Text>
+
+              <TouchableOpacity
+                style={[styles.syncButton, isSyncing && { opacity: 0.6 }]}
+                onPress={handleSyncPress}
+                disabled={isSyncing}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="cloud-download-outline" size={18} color="#34D399" style={{ marginRight: 8 }} />
+                <Text style={styles.syncButtonText}>
+                  {isSyncing ? 'সিঙ্ক করা হচ্ছে...' : 'সার্ভার থেকে এখনই সিঙ্ক করুন'}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             {/* Reset Today's Progress */}
@@ -351,6 +388,22 @@ const styles = StyleSheet.create({
     fontFamily: 'noorehuda',
     textAlign: 'center',
     letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing,
+  },
+  syncButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.3)',
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginTop: 4,
+  },
+  syncButtonText: {
+    color: '#34D399',
+    fontSize: 13,
+    fontFamily: 'NotoSansBengali_600SemiBold',
   },
   resetButton: {
     flexDirection: 'row',

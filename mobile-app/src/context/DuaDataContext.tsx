@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Category, Dua } from '../types/dua';
-import { loadOfflineData, checkForDataUpdates } from '../services/dataSyncService';
+import { loadOfflineData, checkForDataUpdates, forceSyncData } from '../services/dataSyncService';
 
 interface DuaDataContextType {
   categories: Category[];
@@ -9,6 +9,7 @@ interface DuaDataContextType {
   isDataLoaded: boolean;
   isSyncing: boolean;
   checkForUpdates: () => Promise<boolean>;
+  forceSync: () => Promise<{ success: boolean; error?: string }>;
 }
 
 const DuaDataContext = createContext<DuaDataContextType | undefined>(undefined);
@@ -53,6 +54,26 @@ export const DuaDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return false;
   };
 
+  const runForceSync = async (): Promise<{ success: boolean; error?: string }> => {
+    setIsSyncing(true);
+    try {
+      const result = await forceSyncData();
+      if (result.success && result.categories && result.duas) {
+        setCategories(result.categories);
+        setDuas(result.duas);
+        if (result.version) {
+          setDataVersion(result.version);
+        }
+        return { success: true };
+      }
+      return { success: false, error: result.error };
+    } catch (e: any) {
+      return { success: false, error: e?.message || 'সিঙ্ক ব্যর্থ হয়েছে' };
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <DuaDataContext.Provider
       value={{
@@ -62,6 +83,7 @@ export const DuaDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isDataLoaded,
         isSyncing,
         checkForUpdates: runBackgroundSync,
+        forceSync: runForceSync,
       }}
     >
       {children}

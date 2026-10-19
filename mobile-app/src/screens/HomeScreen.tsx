@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { CategoryId } from '../types/dua';
 import { OverallProgressCard } from '../components/OverallProgressCard';
 import { CategoryCard } from '../components/CategoryCard';
@@ -12,13 +12,28 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
-  const { categories } = useDuaData();
+  const { categories, checkForUpdates } = useDuaData();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await checkForUpdates();
+    setRefreshing(false);
+  };
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor="#10B981"
+          colors={['#10B981']}
+        />
+      }
     >
       {/* Daily Overall Progress Summary */}
       <OverallProgressCard />
