@@ -1,5 +1,15 @@
 [
   {
+    "id": "namaz",
+    "nameBangla": "নামাজের পরের দোয়া",
+    "titleBangla": "নামাজের পরের দোয়া",
+    "subtitleBangla": "ফরজ সালাত সমাপনের পর পঠিত গুরুত্বপূর্ণ সুন্নাত জিকির",
+    "timeBangla": "ফরজ নামাজের পর",
+    "icon": "prayer-mat",
+    "hasProgress": false,
+    "sortOrder": 0
+  },
+  {
     "id": "sokal",
     "nameBangla": "সকালের দোয়া",
     "titleBangla": "সকালের দোয়া",
@@ -7,7 +17,7 @@
     "timeBangla": "ফজর পরবর্তী সময়",
     "icon": "sunny-outline",
     "hasProgress": true,
-    "sortOrder": 0
+    "sortOrder": 1
   },
   {
     "id": "sondha",
@@ -17,16 +27,6 @@
     "timeBangla": "আসর পরবর্তী সময়",
     "icon": "moon-outline",
     "hasProgress": true,
-    "sortOrder": 1
-  },
-  {
-    "id": "namaz",
-    "nameBangla": "নামাজের পরের দোয়া",
-    "titleBangla": "নামাজের পরের দোয়া",
-    "subtitleBangla": "ফরজ সালাত সমাপনের পর পঠিত গুরুত্বপূর্ণ সুন্নাত জিকির",
-    "timeBangla": "ফরজ নামাজের পর",
-    "icon": "prayer-mat",
-    "hasProgress": false,
     "sortOrder": 2
   },
   {
