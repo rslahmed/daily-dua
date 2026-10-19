@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Lock,
   Plus,
@@ -13,6 +14,7 @@ import {
   Moon,
   ChevronRight,
   AlertTriangle,
+  X,
 } from 'lucide-react';
 import { Category, Dua } from '../types/dua';
 import {
@@ -79,6 +81,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       }
     });
   }, []);
+
+  // Prevent background scroll when any modal is active
+  useEffect(() => {
+    if (isCategoryModalOpen || isDuaModalOpen || deleteConfirm.isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isCategoryModalOpen, isDuaModalOpen, deleteConfirm.isOpen]);
 
   const renderCategoryIcon = (category: Category) => {
     if (category.icon?.includes('sun') || category.id === 'sokal') {
@@ -589,12 +603,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       )}
 
       {/* Category Modal (Create / Edit) */}
-      {isCategoryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#111D19] border border-[#192C25] rounded-3xl w-full max-w-md p-5 md:p-6 shadow-2xl text-white">
-            <h3 className="text-lg font-bold text-white pb-3 border-b border-[#172721]">
-              {editingCategory?.id ? 'ক্যাটাগরি সম্পাদনা' : 'নতুন ক্যাটাগরি তৈরি'}
-            </h3>
+      {isCategoryModalOpen &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+            onClick={() => setIsCategoryModalOpen(false)}
+          >
+            <div
+              className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-md p-5 md:p-6 shadow-2xl text-white relative animate-scale-up"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-[#1C332A]">
+                <h3 className="text-lg font-bold text-white">
+                  {editingCategory?.id ? 'ক্যাটাগরি সম্পাদনা' : 'নতুন ক্যাটাগরি তৈরি'}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryModalOpen(false)}
+                  className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white hover:bg-[#162822] transition-colors"
+                  title="বন্ধ করুন"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
             <form onSubmit={handleSaveCategory} className="space-y-4 my-4">
               <div>
@@ -671,16 +702,34 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Dua Modal (Create / Edit inside selected category) */}
-      {isDuaModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="bg-[#111D19] border border-[#192C25] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl text-white">
-            <h3 className="text-lg font-bold text-white pb-3 border-b border-[#172721]">
-              {editingDua?.id ? 'দোয়া সম্পাদনা' : 'নতুন দোয়া যোগ করুন'}
-            </h3>
+      {isDuaModalOpen &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+            onClick={() => setIsDuaModalOpen(false)}
+          >
+            <div
+              className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl text-white relative animate-scale-up"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-[#1C332A]">
+                <h3 className="text-lg font-bold text-white">
+                  {editingDua?.id ? 'দোয়া সম্পাদনা' : 'নতুন দোয়া যোগ করুন'}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsDuaModalOpen(false)}
+                  className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white hover:bg-[#162822] transition-colors"
+                  title="বন্ধ করুন"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
             <form onSubmit={handleSaveDua} className="space-y-4 my-4">
               {/* 1. Title */}
@@ -837,56 +886,62 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Delete Confirmation Modal */}
-      {deleteConfirm.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      {deleteConfirm.isOpen &&
+        createPortal(
           <div
-            className="bg-[#111D19] border border-red-900/50 rounded-3xl w-full max-w-md p-6 shadow-2xl text-center space-y-5"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+            onClick={() => setDeleteConfirm({ isOpen: false, type: 'category', id: '', title: '' })}
           >
-            {/* Warning Icon with Glow */}
-            <div className="w-16 h-16 rounded-2xl bg-red-950/40 border border-red-500/40 flex items-center justify-center text-red-400 mx-auto shadow-lg shadow-red-950/50">
-              <AlertTriangle className="w-8 h-8 text-red-400" />
-            </div>
+            <div
+              className="bg-[#111D19] border border-red-900/50 rounded-3xl w-full max-w-md p-6 shadow-2xl text-center space-y-5 relative animate-scale-up"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Warning Icon with Glow */}
+              <div className="w-16 h-16 rounded-2xl bg-red-950/40 border border-red-500/40 flex items-center justify-center text-red-400 mx-auto shadow-lg shadow-red-950/50">
+                <AlertTriangle className="w-8 h-8 text-red-400" />
+              </div>
 
-            <div>
-              <h3 className="text-lg md:text-xl font-bold text-white">
-                {deleteConfirm.type === 'category' ? 'ক্যাটাগরি মুছে ফেলতে চান?' : 'দোয়াটি মুছে ফেলতে চান?'}
-              </h3>
-              <p className="text-xs md:text-sm text-[#94A3B8] mt-2 leading-relaxed">
-                আপনি কি নিশ্চিতভাবে <span className="text-white font-bold">"{deleteConfirm.title}"</span>{' '}
-                {deleteConfirm.type === 'category'
-                  ? 'ক্যাটাগরি এবং এর সমস্ত দোয়া লিঙ্ক মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।'
-                  : 'দোয়াটি মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।'}
-              </p>
-            </div>
+              <div>
+                <h3 className="text-lg md:text-xl font-bold text-white">
+                  {deleteConfirm.type === 'category' ? 'ক্যাটাগরি মুছে ফেলতে চান?' : 'দোয়াটি মুছে ফেলতে চান?'}
+                </h3>
+                <p className="text-xs md:text-sm text-[#94A3B8] mt-2 leading-relaxed">
+                  আপনি কি নিশ্চিতভাবে <span className="text-white font-bold">"{deleteConfirm.title}"</span>{' '}
+                  {deleteConfirm.type === 'category'
+                    ? 'ক্যাটাগরি এবং এর সমস্ত দোয়া লিঙ্ক মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।'
+                    : 'দোয়াটি মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।'}
+                </p>
+              </div>
 
-            <div className="flex items-center justify-center space-x-3 pt-2">
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={() => setDeleteConfirm({ isOpen: false, type: 'category', id: '', title: '' })}
-                className="px-5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-xs md:text-sm font-semibold text-[#CBD5E1] hover:text-white hover:bg-[#1E3A2F] transition-all disabled:opacity-50"
-              >
-                বাতিল করুন
-              </button>
+              <div className="flex items-center justify-center space-x-3 pt-2">
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => setDeleteConfirm({ isOpen: false, type: 'category', id: '', title: '' })}
+                  className="px-5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-xs md:text-sm font-semibold text-[#CBD5E1] hover:text-white hover:bg-[#1E3A2F] transition-all disabled:opacity-50"
+                >
+                  বাতিল করুন
+                </button>
 
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={handleConfirmDelete}
-                className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs md:text-sm font-bold shadow-lg shadow-red-950/50 transition-all flex items-center space-x-2 active:scale-95 disabled:opacity-50"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>{isDeleting ? 'মুছে ফেলা হচ্ছে...' : 'হ্যাঁ, মুছে ফেলুন'}</span>
-              </button>
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={handleConfirmDelete}
+                  className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs md:text-sm font-bold shadow-lg shadow-red-950/50 transition-all flex items-center space-x-2 active:scale-95 disabled:opacity-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{isDeleting ? 'মুছে ফেলা হচ্ছে...' : 'হ্যাঁ, মুছে ফেলুন'}</span>
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

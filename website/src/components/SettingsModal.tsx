@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, RotateCcw } from 'lucide-react';
 import { useDua } from '../context/DuaContext';
 
@@ -17,12 +18,27 @@ const fontSizes = [
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { settings, updateSettings, resetTodayProgress } = useDua();
 
+  // Prevent background scroll when settings is active
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
       <div
-        className="bg-[#111D19] border border-[#192C25] rounded-3xl w-full max-w-md p-5 md:p-6 shadow-2xl relative overflow-hidden text-white"
+        className="bg-[#111D19] border border-[#1E332B] rounded-3xl w-full max-w-md p-5 md:p-6 shadow-2xl relative overflow-hidden text-white animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -157,6 +173,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
