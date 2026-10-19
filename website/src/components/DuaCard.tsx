@@ -3,6 +3,7 @@ import { CheckCircle2, Circle, Bookmark, Sparkles } from 'lucide-react';
 import { Dua } from '../types/dua';
 import { useDua } from '../context/DuaContext';
 import { toBanglaNumber } from '../utils/date';
+import { AyahBadge } from './AyahBadge';
 
 interface DuaCardProps {
   dua: Dua;
@@ -16,9 +17,64 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
   const parentCategories = categories.filter(
     (c) => dua.categoryIds?.includes(c.id) || dua.categoryId === c.id
   );
-  const isPlainOnly = parentCategories.length > 0 && parentCategories.every((c) => c.hasProgress === false);
+  const isPlainOnly =
+    parentCategories.length > 0 && parentCategories.every((c) => c.hasProgress === false);
 
   const isRead = !isPlainOnly && isDuaRead(dua.id);
+
+  // Render Arabic text with proper paragraph breaks (e.g. 3 Qul) and unified Ayah badges
+  const renderArabicContent = (text: string, fontSize: number) => {
+    // Split into paragraphs (e.g. 3 Qul has 3 Surahs separated by \n\n)
+    const paragraphs = text.split(/\n\s*\n/);
+
+    return (
+      <div className="space-y-6">
+        {paragraphs.map((paragraph, pIdx) => {
+          const lines = paragraph.split('\n');
+          return (
+            <div key={pIdx} className="space-y-1.5">
+              {lines.map((line, lIdx) => {
+                const trimmed = line.trim();
+                const isBismillah = trimmed === 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+                // Parse ayat marks like ﴿١﴾, ﴿২﴾, etc.
+                const segments = line.split(/(﴿[0-9\u0660-\u0669\u09E6-\u09EF]+﴾)/g);
+
+                return (
+                  <p
+                    key={lIdx}
+                    className={`font-arabic text-white select-text ${
+                      isBismillah
+                        ? 'text-center text-[#34D399] py-1 font-medium'
+                        : 'text-right leading-loose'
+                    }`}
+                    style={{
+                      fontSize: isBismillah ? `${Math.max(18, fontSize - 2)}px` : `${fontSize}px`,
+                      lineHeight: `${fontSize * 2.1}px`,
+                    }}
+                    dir="rtl"
+                  >
+                    {segments.map((seg, sIdx) => {
+                      const match = seg.match(/^﴿([0-9\u0660-\u0669\u09E6-\u09EF]+)﴾$/);
+                      if (match) {
+                        return (
+                          <AyahBadge
+                            key={sIdx}
+                            number={match[1]}
+                            size={Math.round(fontSize * 1.05)}
+                          />
+                        );
+                      }
+                      return <span key={sIdx}>{seg}</span>;
+                    })}
+                  </p>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <div
@@ -53,17 +109,9 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
         </div>
       </div>
 
-      {/* Part 1: Arabic Text */}
-      <div className="pt-1 pb-3 mb-3 border-b border-[#1C332A] text-right" dir="rtl">
-        <p
-          className="font-arabic text-white leading-loose select-text"
-          style={{
-            fontSize: `${settings.arabicFontSize}px`,
-            lineHeight: `${settings.arabicFontSize * 2}px`,
-          }}
-        >
-          {dua.arabic}
-        </p>
+      {/* Part 1: Arabic Text (Multi-paragraph separation + unified Ayah marks) */}
+      <div className="pt-1 pb-4 mb-3 border-b border-[#1C332A]">
+        {renderArabicContent(dua.arabic, settings.arabicFontSize)}
       </div>
 
       {/* Part 2: উচ্চারণ (Uccharon) */}

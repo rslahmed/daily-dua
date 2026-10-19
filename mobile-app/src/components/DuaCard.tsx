@@ -7,6 +7,7 @@ import { useSettings } from '../context/SettingsContext';
 import { toBanglaNumber } from '../utils/date';
 import { formatArabicText } from '../utils/text';
 import { ARABIC_TYPOGRAPHY, getArabicLineHeight } from '../constants/typography';
+import { AyahBadge } from './AyahBadge';
 
 interface DuaCardProps {
   dua: Dua;
@@ -19,6 +20,59 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
 
   const isNamaz = dua.categoryId === 'namaz';
   const isRead = !isNamaz && isDuaRead(dua.id);
+
+  const renderArabicContent = () => {
+    const raw = dua.arabic || '';
+    const paragraphs = raw.split(/\n\s*\n/);
+
+    return (
+      <View style={styles.arabicParagraphs}>
+        {paragraphs.map((para, pIdx) => {
+          const lines = para.split('\n');
+          return (
+            <View key={pIdx} style={[styles.surahBlock, pIdx > 0 && styles.surahBlockSpacing]}>
+              {lines.map((line, lIdx) => {
+                const trimmed = line.trim();
+                const isBismillah = trimmed === 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+                const formattedLine = formatArabicText(line);
+                const segments = formattedLine.split(/(﴿[0-9\u0660-\u0669\u09E6-\u09EF]+﴾)/g);
+
+                return (
+                  <Text
+                    key={lIdx}
+                    style={[
+                      styles.arabicText,
+                      isBismillah && styles.bismillahText,
+                      {
+                        fontFamily: ARABIC_TYPOGRAPHY.fontFamily,
+                        fontSize: isBismillah ? arabicFontSize - 2 : arabicFontSize,
+                        lineHeight: getArabicLineHeight(arabicFontSize),
+                        letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing,
+                      },
+                    ]}
+                  >
+                    {segments.map((seg, sIdx) => {
+                      const match = seg.match(/^﴿([0-9\u0660-\u0669\u09E6-\u09EF]+)﴾$/);
+                      if (match) {
+                        return (
+                          <AyahBadge
+                            key={sIdx}
+                            number={match[1]}
+                            size={Math.round(arabicFontSize * 0.95)}
+                          />
+                        );
+                      }
+                      return seg;
+                    })}
+                  </Text>
+                );
+              })}
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
 
   return (
     <View style={[styles.card, isRead && styles.cardRead]}>
@@ -45,19 +99,7 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
 
       {/* Part 1: Arabic Text */}
       <View style={styles.arabicContainer}>
-        <Text
-          style={[
-            styles.arabicText,
-            {
-              fontFamily: ARABIC_TYPOGRAPHY.fontFamily,
-              fontSize: arabicFontSize,
-              lineHeight: getArabicLineHeight(arabicFontSize),
-              letterSpacing: ARABIC_TYPOGRAPHY.letterSpacing,
-            },
-          ]}
-        >
-          {formatArabicText(dua.arabic)}
-        </Text>
+        {renderArabicContent()}
       </View>
 
       {/* Part 2: উচ্চারণ (Uccharon) */}
@@ -199,6 +241,20 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#1C332A',
+  },
+  arabicParagraphs: {
+    width: '100%',
+  },
+  surahBlock: {
+    width: '100%',
+  },
+  surahBlockSpacing: {
+    marginTop: 18,
+  },
+  bismillahText: {
+    textAlign: 'center',
+    color: '#34D399',
+    marginBottom: 6,
   },
   arabicText: {
     color: '#FFFFFF',
