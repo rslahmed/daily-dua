@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { CheckCircle2, BookOpen } from 'lucide-react';
 import { ProgressBar } from '../components/ProgressBar';
 import { DuaCard } from '../components/DuaCard';
@@ -6,12 +7,15 @@ import { useDua } from '../context/DuaContext';
 import { toBanglaNumber } from '../utils/date';
 
 interface CategoryDetailPageProps {
-  categoryId: string;
+  categoryId?: string;
 }
 
 type FilterTab = 'all' | 'unread' | 'read';
 
-export const CategoryDetailPage: React.FC<CategoryDetailPageProps> = ({ categoryId }) => {
+export const CategoryDetailPage: React.FC<CategoryDetailPageProps> = ({ categoryId: propCategoryId }) => {
+  const { categoryId: paramCategoryId } = useParams<{ categoryId: string }>();
+  const categoryId = propCategoryId || paramCategoryId || '';
+
   const { categories, duas, isDuaRead, getCategoryProgress } = useDua();
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
 

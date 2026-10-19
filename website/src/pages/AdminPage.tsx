@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import {
   Lock,
@@ -32,11 +33,21 @@ import { toBanglaNumber } from '../utils/date';
 import { useDua } from '../context/DuaContext';
 
 interface AdminPageProps {
-  onBackToApp: () => void;
+  onBackToApp?: () => void;
 }
 
 export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
+  const navigate = useNavigate();
+  const { categoryId } = useParams<{ categoryId?: string }>();
   const { refreshData } = useDua();
+
+  const handleBackToApp = useCallback(() => {
+    if (onBackToApp) {
+      onBackToApp();
+    } else {
+      navigate('/');
+    }
+  }, [onBackToApp, navigate]);
 
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -145,17 +156,40 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
     }
   };
 
-  const loadCategoryDuas = async (cat: Category) => {
-    setSelectedCategory(cat);
+  const reloadCurrentDuas = useCallback(async (catId: string) => {
     setIsLoading(true);
     try {
-      const list = await fetchAdminDuas(cat.id);
+      const list = await fetchAdminDuas(catId);
       setDuas(list);
     } catch (e) {
       console.error(e);
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  // Sync selected category with URL param :categoryId
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    if (categoryId) {
+      if (categories.length > 0) {
+        const cat = categories.find((c) => c.id === categoryId);
+        if (cat) {
+          setSelectedCategory(cat);
+          reloadCurrentDuas(cat.id);
+        } else {
+          navigate('/admin', { replace: true });
+        }
+      }
+    } else {
+      setSelectedCategory(null);
+      setDuas([]);
+    }
+  }, [categoryId, categories, isAuthenticated, navigate, reloadCurrentDuas]);
+
+  const loadCategoryDuas = (cat: Category) => {
+    navigate(`/admin/category/${cat.id}`);
   };
 
   // Category Save / Delete
@@ -200,8 +234,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
     try {
       if (deleteConfirm.type === 'category') {
         await deleteAdminCategory(deleteConfirm.id);
-        if (selectedCategory?.id === deleteConfirm.id) {
-          setSelectedCategory(null);
+        if (selectedCategory?.id === deleteConfirm.id || categoryId === deleteConfirm.id) {
+          navigate('/admin');
         }
         await loadCategories();
         await refreshData();
@@ -209,7 +243,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       } else {
         await deleteAdminDua(deleteConfirm.id);
         if (selectedCategory) {
-          await loadCategoryDuas(selectedCategory);
+          await reloadCurrentDuas(selectedCategory.id);
         }
         await loadCategories();
         await refreshData();
@@ -268,7 +302,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       setIsDuaModalOpen(false);
       setEditingDua(null);
       if (selectedCategory) {
-        await loadCategoryDuas(selectedCategory);
+        await reloadCurrentDuas(selectedCategory.id);
       }
       await loadCategories();
       await refreshData();
@@ -315,7 +349,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
         </form>
 
         <button
-          onClick={onBackToApp}
+          onClick={handleBackToApp}
           className="text-xs text-[#94A3B8] hover:text-[#34D399] transition-colors pt-2 block mx-auto"
         >
           ← অ্যাপে ফিরে যান
@@ -339,7 +373,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
         <div className="flex items-center space-x-3.5">
           {selectedCategory ? (
             <button
-              onClick={() => setSelectedCategory(null)}
+              onClick={() => navigate('/admin')}
               className="px-3.5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-[#34D399] hover:text-white hover:bg-[#1E3A2F] transition-all flex items-center space-x-2 text-xs md:text-sm font-semibold active:scale-95 shadow-sm"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -347,7 +381,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
             </button>
           ) : (
             <button
-              onClick={onBackToApp}
+              onClick={handleBackToApp}
               className="px-3.5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-[#CBD5E1] hover:text-white hover:bg-[#1E3A2F] transition-all flex items-center space-x-2 text-xs md:text-sm font-semibold active:scale-95 shadow-sm"
             >
               <ArrowLeft className="w-4 h-4" />

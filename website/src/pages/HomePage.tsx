@@ -1,14 +1,24 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { OverallProgressCard } from '../components/OverallProgressCard';
 import { CategoryCard } from '../components/CategoryCard';
 import { useDua } from '../context/DuaContext';
 
 interface HomePageProps {
-  onSelectCategory: (categoryId: string) => void;
+  onSelectCategory?: (categoryId: string) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectCategory }) => {
   const { categories, isLoading } = useDua();
+  const navigate = useNavigate();
+
+  const handleSelect = (categoryId: string) => {
+    if (onSelectCategory) {
+      onSelectCategory(categoryId);
+    } else {
+      navigate(`/category/${categoryId}`);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -32,7 +42,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectCategory }) => {
               <CategoryCard
                 key={cat.id}
                 category={cat}
-                onSelect={onSelectCategory}
+                onSelect={handleSelect}
               />
             ))}
           </div>
