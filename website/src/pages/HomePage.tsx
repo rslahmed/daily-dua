@@ -20,6 +20,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectCategory }) => {
     }
   };
 
+  const getCategoryGridClass = (count: number) => {
+    if (count <= 1) return 'grid grid-cols-1 max-w-xl mx-auto gap-4';
+    if (count === 3) return 'grid grid-cols-1 md:grid-cols-3 gap-4';
+    // 2, 4 or even counts look balanced and symmetric in 2 columns (2x2 grid)
+    if (count % 2 === 0) return 'grid grid-cols-1 md:grid-cols-2 gap-4';
+    return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4';
+  };
+
   return (
     <div className="space-y-6">
       {/* Daily Overall Progress Summary */}
@@ -37,7 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectCategory }) => {
             <div className="w-8 h-8 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          <div className={getCategoryGridClass(categories.length)}>
             {categories.map((cat) => (
               <CategoryCard
                 key={cat.id}

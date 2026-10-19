@@ -118,17 +118,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
     };
   }, [isCategoryModalOpen, isDuaModalOpen, deleteConfirm.isOpen]);
 
-  const renderCategoryIcon = (category: Category) => {
+  const getCategoryTheme = (category: Category) => {
     if (category.icon?.includes('sun') || category.id === 'sokal') {
-      return <Sun className="w-6 h-6 text-[#FBBF24]" />;
+      return {
+        icon: <Sun className="w-6 h-6 text-[#FBBF24]" />,
+        iconBg: 'bg-[#FBBF24]/10 border-[#FBBF24]/25 group-hover:border-[#FBBF24]/50',
+      };
     }
     if (category.icon?.includes('moon') || category.id === 'sondha') {
-      return <Moon className="w-6 h-6 text-[#60A5FA]" />;
+      return {
+        icon: <Moon className="w-6 h-6 text-[#60A5FA]" />,
+        iconBg: 'bg-[#60A5FA]/10 border-[#60A5FA]/25 group-hover:border-[#60A5FA]/50',
+      };
     }
     if (category.icon?.includes('bed') || category.id === 'sleep' || category.id === 'ghum') {
-      return <Bed className="w-6 h-6 text-[#A78BFA]" />;
+      return {
+        icon: <Bed className="w-6 h-6 text-[#A78BFA]" />,
+        iconBg: 'bg-[#A78BFA]/10 border-[#A78BFA]/25 group-hover:border-[#A78BFA]/50',
+      };
     }
-    return <BookOpen className="w-6 h-6 text-[#34D399]" />;
+    return {
+      icon: <BookOpen className="w-6 h-6 text-[#34D399]" />,
+      iconBg: 'bg-[#10B981]/10 border-[#10B981]/25 group-hover:border-[#10B981]/50',
+    };
   };
 
   const showToast = (msg: string) => {
@@ -469,87 +481,97 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
           {isLoading ? (
             <div className="py-12 text-center text-[#94A3B8] text-sm">লোড হচ্ছে...</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories.map((cat) => (
-                <div
-                  key={cat.id}
-                  onClick={() => loadCategoryDuas(cat)}
-                  className="bg-[#111D19] border border-[#1E332B] hover:border-[#10B981]/60 rounded-2xl p-5 transition-all duration-200 group flex flex-col justify-between shadow-lg shadow-black/20 hover:shadow-[#10B981]/5 hover:-translate-y-0.5 cursor-pointer"
-                >
-                  {/* Card Top: Icon + Title + Subtitle */}
-                  <div className="flex items-start space-x-3.5 min-w-0">
-                    <div className="w-12 h-12 rounded-2xl bg-[#0D1613] border border-[#1E332B] group-hover:border-[#10B981]/40 flex items-center justify-center flex-shrink-0 transition-colors">
-                      {renderCategoryIcon(cat)}
+            <div className={categories.length % 2 === 0 ? "grid grid-cols-1 md:grid-cols-2 gap-4" : (categories.length === 3 ? "grid grid-cols-1 md:grid-cols-3 gap-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")}>
+              {categories.map((cat) => {
+                const theme = getCategoryTheme(cat);
+                return (
+                  <div
+                    key={cat.id}
+                    onClick={() => loadCategoryDuas(cat)}
+                    className="bg-[#111D19] border border-[#1E332B] hover:border-[#10B981]/60 rounded-2xl p-5 transition-all duration-200 group flex flex-col justify-between shadow-lg shadow-black/20 hover:shadow-[#10B981]/5 hover:-translate-y-0.5 cursor-pointer"
+                  >
+                    {/* Card Top: Icon + Title + Subtitle */}
+                    <div className="flex items-start space-x-3.5 min-w-0">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors border ${theme.iconBg}`}>
+                        {theme.icon}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                          <h4 className="text-base md:text-lg font-bold text-white group-hover:text-[#34D399] transition-colors leading-snug">
+                            {cat.nameBangla || cat.titleBangla}
+                          </h4>
+                          {cat.timeBangla && (
+                            <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#0D1613] border border-[#1E332B] text-[#94A3B8]">
+                              {cat.timeBangla}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2 leading-relaxed">
+                          {cat.subtitleBangla || cat.timeBangla || 'কোনো বিবরণ নেই'}
+                        </p>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-base md:text-lg font-bold text-white group-hover:text-[#34D399] transition-colors leading-snug">
-                        {cat.nameBangla || cat.titleBangla}
-                      </h4>
-                      <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2 leading-relaxed">
-                        {cat.subtitleBangla || cat.timeBangla || 'কোনো বিবরণ নেই'}
-                      </p>
-                    </div>
-                  </div>
 
-                  {/* Card Bottom: Dua Count + Tracking Tag + Actions */}
-                  <div className="mt-5 pt-4 border-t border-[#1C332A] flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center space-x-2 flex-wrap gap-y-1.5">
-                      <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#0D1613] border border-[#1E332B] text-xs font-semibold text-[#34D399]">
-                        <BookOpen className="w-3.5 h-3.5 text-[#10B981]" />
-                        <span>মোট {toBanglaNumber(cat.totalDuas || 0)}টি দোয়া</span>
+                    {/* Card Bottom: Dua Count + Tracking Tag + Actions */}
+                    <div className="mt-5 pt-4 border-t border-[#1C332A] flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+                      <div className="flex items-center space-x-2 flex-wrap gap-y-1.5">
+                        <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#0D1613] border border-[#1E332B] text-xs font-semibold text-[#34D399]">
+                          <BookOpen className="w-3.5 h-3.5 text-[#10B981]" />
+                          <span>মোট {toBanglaNumber(cat.totalDuas || 0)}টি দোয়া</span>
+                        </div>
+
+                        <span
+                          className={`text-xs font-semibold px-2.5 py-1.5 rounded-xl border ${
+                            cat.hasProgress
+                              ? 'bg-[#10B981]/15 border-[#10B981]/30 text-[#34D399]'
+                              : 'bg-[#1E293B] border-[#334155] text-[#94A3B8]'
+                          }`}
+                        >
+                          {cat.hasProgress ? 'ট্র্যাকিং সহ' : 'সাধারণ পঠন'}
+                        </span>
                       </div>
 
-                      <span
-                        className={`text-xs font-semibold px-2.5 py-1.5 rounded-xl border ${
-                          cat.hasProgress
-                            ? 'bg-[#10B981]/15 border-[#10B981]/30 text-[#34D399]'
-                            : 'bg-[#1E293B] border-[#334155] text-[#94A3B8]'
-                        }`}
-                      >
-                        {cat.hasProgress ? 'ট্র্যাকিং সহ' : 'সাধারণ পঠন'}
-                      </span>
-                    </div>
+                      <div className="flex items-center space-x-2 flex-shrink-0">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingCategory(cat);
+                            setIsCategoryModalOpen(true);
+                          }}
+                          className="px-3 py-2 rounded-xl bg-[#162822] hover:bg-[#1E3A2F] border border-[#244237] hover:border-[#10B981]/60 text-[#CBD5E1] hover:text-white text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
+                          title="ক্যাটাগরি সম্পাদনা"
+                        >
+                          <Edit2 className="w-3.5 h-3.5 text-[#34D399]" />
+                          <span>এডিট</span>
+                        </button>
 
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingCategory(cat);
-                          setIsCategoryModalOpen(true);
-                        }}
-                        className="px-3 py-2 rounded-xl bg-[#162822] hover:bg-[#1E3A2F] border border-[#244237] hover:border-[#10B981]/60 text-[#CBD5E1] hover:text-white text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
-                        title="ক্যাটাগরি সম্পাদনা"
-                      >
-                        <Edit2 className="w-3.5 h-3.5 text-[#34D399]" />
-                        <span>এডিট</span>
-                      </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRequestDeleteCategory(cat.id, cat.nameBangla || cat.titleBangla || '');
+                          }}
+                          className="px-3 py-2 rounded-xl bg-red-950/25 hover:bg-red-950/50 border border-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-200 text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
+                          title="ক্যাটাগরি মুছে ফেলুন"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>মুছুন</span>
+                        </button>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRequestDeleteCategory(cat.id, cat.nameBangla || cat.titleBangla || '');
-                        }}
-                        className="px-3 py-2 rounded-xl bg-red-950/25 hover:bg-red-950/50 border border-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-200 text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
-                        title="ক্যাটাগরি মুছে ফেলুন"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>মুছুন</span>
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          loadCategoryDuas(cat);
-                        }}
-                        className="px-3.5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs font-bold transition-all flex items-center space-x-1.5 shadow-md shadow-[#10B981]/20 active:scale-95"
-                      >
-                        <span>দোয়া দেখুন</span>
-                        <ChevronRight className="w-4 h-4 text-[#0A0F0D]" />
-                      </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            loadCategoryDuas(cat);
+                          }}
+                          className="px-3.5 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#0A0F0D] text-xs font-bold transition-all flex items-center space-x-1.5 shadow-md shadow-[#10B981]/20 active:scale-95"
+                        >
+                          <span>দোয়া দেখুন</span>
+                          <ChevronRight className="w-4 h-4 text-[#0A0F0D]" />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -889,7 +911,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 <label className="text-xs font-semibold text-[#10B981] block mb-2.5">
                   কোন কোন ক্যাটাগরিতে এই দোয়াটি থাকবে (একাধিক ক্যাটাগরি নির্বাচন করা যাবে):
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {categories.map((c) => {
                     const isSelected = editingDua?.categoryIds?.includes(c.id) || false;
                     return (
