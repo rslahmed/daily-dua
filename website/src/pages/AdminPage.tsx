@@ -12,6 +12,7 @@ import {
   Sun,
   Moon,
   ChevronRight,
+  AlertTriangle,
 } from 'lucide-react';
 import { Category, Dua } from '../types/dua';
 import {
@@ -54,6 +55,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
 
   const [isDuaModalOpen, setIsDuaModalOpen] = useState(false);
   const [editingDua, setEditingDua] = useState<Partial<Dua> | null>(null);
+
+  // Delete Confirmation Modal State
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean;
+    type: 'category' | 'dua';
+    id: string;
+    title: string;
+  }>({
+    isOpen: false,
+    type: 'category',
+    id: '',
+    title: '',
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Check auth on mount
   useEffect(() => {
@@ -147,22 +162,54 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
     }
   };
 
-  const handleDeleteCategory = async (id: string, name: string) => {
-    if (!confirm(`আপনি কি "${name}" ক্যাটাগরি এবং এর লিঙ্ক মুছে ফেলতে চান?`)) return;
+  const handleRequestDeleteCategory = (id: string, name: string) => {
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'category',
+      id,
+      title: name,
+    });
+  };
+
+  const handleRequestDeleteDua = (id: string, title: string) => {
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'dua',
+      id,
+      title,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirm.id) return;
+    setIsDeleting(true);
     try {
-      await deleteAdminCategory(id);
-      if (selectedCategory?.id === id) {
-        setSelectedCategory(null);
+      if (deleteConfirm.type === 'category') {
+        await deleteAdminCategory(deleteConfirm.id);
+        if (selectedCategory?.id === deleteConfirm.id) {
+          setSelectedCategory(null);
+        }
+        await loadCategories();
+        await refreshData();
+        showToast(`"${deleteConfirm.title}" ক্যাটাগরি মুছে ফেলা হয়েছে!`);
+      } else {
+        await deleteAdminDua(deleteConfirm.id);
+        if (selectedCategory) {
+          await loadCategoryDuas(selectedCategory);
+        }
+        await loadCategories();
+        await refreshData();
+        showToast(`"${deleteConfirm.title}" দোয়াটি মুছে ফেলা হয়েছে!`);
       }
-      await loadCategories();
-      await refreshData();
-      showToast('ক্যাটাগরি মুছে ফেলা হয়েছে!');
+      setDeleteConfirm({ isOpen: false, type: 'category', id: '', title: '' });
     } catch {
-      alert('ক্যাটাগরি মুছে ফেলা যায়নি।');
+      showToast('মুছে ফেলা সম্ভব হয়নি। আবার চেষ্টা করুন।');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  // Dua Save / Delete
+  // Dua Save / Edit
   const handleOpenAddDua = () => {
     setEditingDua({
       titleBangla: '',
@@ -189,7 +236,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
   const handleSaveDua = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingDua?.titleBangla || !editingDua?.arabic) {
-      alert('দোয়ার শিরোনাম ও আরবি পাঠ আবশ্যক।');
+      showToast('দোয়ার শিরোনাম ও আরবি পাঠ আবশ্যক।');
       return;
     }
 
@@ -213,22 +260,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
       await refreshData();
       showToast('দোয়া সফলভাবে সংরক্ষিত এবং ভার্সন আপডেট হয়েছে!');
     } catch {
-      alert('দোয়া সংরক্ষণ করা যায়নি।');
-    }
-  };
-
-  const handleDeleteDua = async (id: string, title: string) => {
-    if (!confirm(`আপনি কি "${title}" দোয়াটি মুছে ফেলতে চান?`)) return;
-    try {
-      await deleteAdminDua(id);
-      if (selectedCategory) {
-        await loadCategoryDuas(selectedCategory);
-      }
-      await loadCategories();
-      await refreshData();
-      showToast('দোয়া মুছে ফেলা হয়েছে!');
-    } catch {
-      alert('দোয়া মুছে ফেলা যায়নি।');
+      showToast('দোয়া সংরক্ষণ করা যায়নি।');
     }
   };
 
@@ -431,7 +463,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteCategory(cat.id, cat.nameBangla || cat.titleBangla || '');
+                          handleRequestDeleteCategory(cat.id, cat.nameBangla || cat.titleBangla || '');
                         }}
                         className="px-3 py-2 rounded-xl bg-red-950/25 hover:bg-red-950/50 border border-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-200 text-xs font-semibold transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
                         title="ক্যাটাগরি মুছে ফেলুন"
@@ -521,7 +553,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                         <span>এডিট</span>
                       </button>
                       <button
-                        onClick={() => handleDeleteDua(dua.id, dua.titleBangla)}
+                        onClick={() => handleRequestDeleteDua(dua.id, dua.titleBangla)}
                         className="px-3 py-1.5 rounded-xl bg-red-950/25 hover:bg-red-950/50 border border-red-900/40 hover:border-red-500/60 text-red-400 hover:text-red-200 text-xs font-semibold flex items-center space-x-1.5 transition-all active:scale-95 shadow-sm"
                         title="দোয়া মুছে ফেলুন"
                       >
@@ -799,6 +831,54 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBackToApp }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div
+            className="bg-[#111D19] border border-red-900/50 rounded-3xl w-full max-w-md p-6 shadow-2xl text-center space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Warning Icon with Glow */}
+            <div className="w-16 h-16 rounded-2xl bg-red-950/40 border border-red-500/40 flex items-center justify-center text-red-400 mx-auto shadow-lg shadow-red-950/50">
+              <AlertTriangle className="w-8 h-8 text-red-400" />
+            </div>
+
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-white">
+                {deleteConfirm.type === 'category' ? 'ক্যাটাগরি মুছে ফেলতে চান?' : 'দোয়াটি মুছে ফেলতে চান?'}
+              </h3>
+              <p className="text-xs md:text-sm text-[#94A3B8] mt-2 leading-relaxed">
+                আপনি কি নিশ্চিতভাবে <span className="text-white font-bold">"{deleteConfirm.title}"</span>{' '}
+                {deleteConfirm.type === 'category'
+                  ? 'ক্যাটাগরি এবং এর সমস্ত দোয়া লিঙ্ক মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।'
+                  : 'দোয়াটি মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।'}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center space-x-3 pt-2">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setDeleteConfirm({ isOpen: false, type: 'category', id: '', title: '' })}
+                className="px-5 py-2.5 rounded-xl bg-[#162822] border border-[#244237] text-xs md:text-sm font-semibold text-[#CBD5E1] hover:text-white hover:bg-[#1E3A2F] transition-all disabled:opacity-50"
+              >
+                বাতিল করুন
+              </button>
+
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs md:text-sm font-bold shadow-lg shadow-red-950/50 transition-all flex items-center space-x-2 active:scale-95 disabled:opacity-50"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>{isDeleting ? 'মুছে ফেলা হচ্ছে...' : 'হ্যাঁ, মুছে ফেলুন'}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
