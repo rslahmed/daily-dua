@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Category, CategoryId, Dua } from '../types/dua';
+import { CategoryId } from '../types/dua';
 import { DuaCard } from '../components/DuaCard';
 import { ProgressBar } from '../components/ProgressBar';
 import { useDuaProgress } from '../context/DuaProgressContext';
+import { useDuaData } from '../context/DuaDataContext';
 import { toBanglaNumber } from '../utils/date';
-import duasDataRaw from '../data/duas.json';
-import categoriesDataRaw from '../data/categories.json';
-
-const allDuas: Dua[] = duasDataRaw as Dua[];
-const categories: Category[] = categoriesDataRaw as Category[];
 
 interface CategoryDetailScreenProps {
   categoryId: CategoryId;
@@ -19,16 +15,27 @@ interface CategoryDetailScreenProps {
 type FilterTab = 'all' | 'unread' | 'read';
 
 export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ categoryId }) => {
+  const { categories, duas } = useDuaData();
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const { isDuaRead, getCategoryProgress } = useDuaProgress();
 
-  const currentCategory = categories.find((c) => c.id === categoryId) || categories[0];
-  const categoryDuas = allDuas.filter((d) => d.categoryId === categoryId);
+  const currentCategory = categories.find((c) => c.id === categoryId) || {
+    id: categoryId,
+    titleBangla: 'দোয়ার বিভাগ',
+    subtitleBangla: '',
+    timeBangla: '',
+    icon: 'sunny-outline',
+    hasProgress: true,
+  };
+
+  const isTrackable = currentCategory.hasProgress !== false;
+  const categoryDuas = duas.filter(
+    (d) => d.categoryIds?.includes(categoryId) || d.categoryId === categoryId
+  );
 
   const { completed, total, percentage } = getCategoryProgress(categoryId);
-  const isNamaz = categoryId === 'namaz';
 
-  const filteredDuas = isNamaz
+  const filteredDuas = !isTrackable
     ? categoryDuas
     : categoryDuas.filter((d) => {
         const isRead = isDuaRead(d.id);
@@ -47,21 +54,23 @@ export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ cate
     >
       {/* Category Progress Banner */}
       <View style={styles.banner}>
-        <View style={[styles.bannerTop, isNamaz && { marginBottom: 0 }]}>
+        <View style={[styles.bannerTop, !isTrackable && { marginBottom: 0 }]}>
           <View>
-            <Text style={styles.bannerTitle}>{currentCategory.titleBangla}</Text>
-            <Text style={styles.bannerSubtitle}>{currentCategory.timeBangla}</Text>
+            <Text style={styles.bannerTitle}>{currentCategory.titleBangla || currentCategory.nameBangla}</Text>
+            {currentCategory.timeBangla ? (
+              <Text style={styles.bannerSubtitle}>{currentCategory.timeBangla}</Text>
+            ) : null}
           </View>
           <View style={styles.bannerBadge}>
             <Text style={styles.bannerBadgeText}>
-              {isNamaz
+              {!isTrackable
                 ? `মোট ${toBanglaNumber(total)}টি দোয়া`
                 : `${toBanglaNumber(completed)}/${toBanglaNumber(total)} সম্পন্ন`}
             </Text>
           </View>
         </View>
 
-        {!isNamaz && (
+        {isTrackable && (
           <View style={styles.progressBarWrapper}>
             <ProgressBar
               progress={percentage}
@@ -74,7 +83,7 @@ export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ cate
       </View>
 
       {/* Filter Tabs (only for trackable routine categories) */}
-      {!isNamaz && (
+      {isTrackable && (
         <View style={styles.tabsContainer}>
           <TouchableOpacity
             style={[styles.tab, activeTab === 'all' && styles.tabActive]}

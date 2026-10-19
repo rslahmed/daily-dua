@@ -4,9 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 import { CategoryId, DailyProgressState, Dua } from '../types/dua';
 import { getTodayDateString } from '../utils/date';
-import duasDataRaw from '../data/duas.json';
-
-const allDuas: Dua[] = duasDataRaw as Dua[];
+import { useDuaData } from './DuaDataContext';
 
 const PROGRESS_STORAGE_KEY = '@daily_dua_progress';
 
@@ -33,13 +31,14 @@ interface DuaProgressContextType {
 const DuaProgressContext = createContext<DuaProgressContextType | undefined>(undefined);
 
 export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { duas, categories } = useDuaData();
   const [readDuaIds, setReadDuaIds] = useState<string[]>([]);
   const [duaTapCounts, setDuaTapCounts] = useState<Record<string, number>>({});
   const [isProgressLoaded, setIsProgressLoaded] = useState(false);
 
   useEffect(() => {
     loadProgress();
-  }, []);
+  }, [categories, duas]);
 
   const triggerHaptic = async (type: 'light' | 'success') => {
     if (Platform.OS === 'web') return;
@@ -62,12 +61,26 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (stored) {
         const parsed: DailyProgressState = JSON.parse(stored);
         if (parsed.lastDate === today) {
-          const namazDuaIds = new Set(allDuas.filter((d) => d.categoryId === 'namaz').map((d) => d.id));
-          const cleanedReadIds = (parsed.readDuaIds || []).filter((id) => !namazDuaIds.has(id));
+          // Exclude duas from categories that don't track progress (e.g. namaz)
+          const nonTrackableCatIds = new Set(
+            categories.filter((c) => c.hasProgress === false).map((c) => c.id)
+          );
+
+          const nonTrackableDuaIds = new Set(
+            duas
+              .filter((d) =>
+                d.categoryIds?.every((cId) => nonTrackableCatIds.has(cId)) ||
+                (d.categoryId && nonTrackableCatIds.has(d.categoryId))
+              )
+              .map((d) => d.id)
+          );
+
+          const cleanedReadIds = (parsed.readDuaIds || []).filter((id) => !nonTrackableDuaIds.has(id));
           const cleanedTapCounts = { ...(parsed.duaTapCounts || {}) };
-          namazDuaIds.forEach((id) => {
+          nonTrackableDuaIds.forEach((id) => {
             delete cleanedTapCounts[id];
           });
+
           setReadDuaIds(cleanedReadIds);
           setDuaTapCounts(cleanedTapCounts);
           setIsProgressLoaded(true);
@@ -105,15 +118,11 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const toggleDuaRead = async (duaId: string) => {
-    const dua = allDuas.find((d) => d.id === duaId);
-    if (dua && dua.categoryId === 'namaz') {
-      return;
-    }
-
     const isCurrentlyRead = readDuaIds.includes(duaId);
     let updatedReadIds: string[];
     let updatedTapCounts = { ...duaTapCounts };
 
+    const dua = duas.find((d) => d.id === duaId);
     const targetCount = dua ? dua.repetitionCount : 1;
 
     if (isCurrentlyRead) {
@@ -132,10 +141,6 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const incrementDuaTap = async (dua: Dua) => {
-    if (dua.categoryId === 'namaz') {
-      return;
-    }
-
     const current = duaTapCounts[dua.id] || 0;
     const target = dua.repetitionCount;
     const next = current + 1;
@@ -176,19 +181,32 @@ export const DuaProgressProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const getCategoryProgress = (categoryId: CategoryId): CategoryProgress => {
-    const categoryDuas = allDuas.filter((d) => d.categoryId === categoryId);
+    const cat = categories.find((c) => c.id === categoryId);
+    const categoryDuas = duas.filter(
+      (d) => d.categoryIds?.includes(categoryId) || d.categoryId === categoryId
+    );
     const total = categoryDuas.length;
-    if (categoryId === 'namaz') {
+
+    if (cat && cat.hasProgress === false) {
       return { completed: 0, total, percentage: 0 };
     }
+
     const completed = categoryDuas.filter((d) => readDuaIds.includes(d.id)).length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     return { completed, total, percentage };
   };
 
   const getOverallProgress = (): CategoryProgress => {
-    // Only track daily routine categories (sokal, sondha), namaz is recited after each obligatory prayer
-    const trackableDuas = allDuas.filter((d) => d.categoryId !== 'namaz');
+    // Only track categories that have progress enabled
+    const trackableCategories = categories.filter((c) => c.hasProgress !== false);
+    const trackableCatIds = new Set(trackableCategories.map((c) => c.id));
+
+    const trackableDuas = duas.filter(
+      (d) =>
+        d.categoryIds?.some((cId) => trackableCatIds.has(cId)) ||
+        (d.categoryId && trackableCatIds.has(d.categoryId))
+    );
+
     const total = trackableDuas.length;
     const completed = trackableDuas.filter((d) => readDuaIds.includes(d.id)).length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;

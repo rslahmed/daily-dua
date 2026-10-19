@@ -1,0 +1,8 @@
+# Protect sensitive files
+<FilesMatch "^(config\.php|schema\.sql|db\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable UTF-8
+AddDefaultCharset UTF-8

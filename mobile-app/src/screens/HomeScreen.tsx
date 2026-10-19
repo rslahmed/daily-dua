@@ -1,19 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Category, CategoryId } from '../types/dua';
+import { CategoryId } from '../types/dua';
 import { OverallProgressCard } from '../components/OverallProgressCard';
 import { CategoryCard } from '../components/CategoryCard';
 import { formatArabicText } from '../utils/text';
 import { ARABIC_TYPOGRAPHY, getArabicLineHeight } from '../constants/typography';
-import categoriesDataRaw from '../data/categories.json';
-
-const categories: Category[] = categoriesDataRaw as Category[];
+import { useDuaData } from '../context/DuaDataContext';
 
 interface HomeScreenProps {
   onSelectCategory: (categoryId: CategoryId) => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
+  const { categories } = useDuaData();
+
   return (
     <ScrollView
       style={styles.container}
@@ -29,7 +29,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectCategory }) => {
         <Text style={styles.sectionSubtitle}>যেকোনো বিভাগে ক্লিক করে দোয়া পড়ুন</Text>
       </View>
 
-      {/* 3 Main Category Cards */}
+      {/* Dynamic Category Cards */}
       {categories.map((cat) => (
         <CategoryCard
           key={cat.id}

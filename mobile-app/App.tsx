@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, BackHandler } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -6,20 +6,19 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { SettingsProvider } from './src/context/SettingsContext';
+import { DuaDataProvider, useDuaData } from './src/context/DuaDataContext';
 import { DuaProgressProvider } from './src/context/DuaProgressContext';
 import { Header } from './src/components/Header';
 import { SettingsModal } from './src/components/SettingsModal';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { CategoryDetailScreen } from './src/screens/CategoryDetailScreen';
-import { Category, CategoryId } from './src/types/dua';
-import categoriesDataRaw from './src/data/categories.json';
-
-const categories: Category[] = categoriesDataRaw as Category[];
+import { CategoryId } from './src/types/dua';
 
 // Prevent splash screen from auto-hiding until assets are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function MainContent() {
+  const { categories } = useDuaData();
   const [activeCategoryId, setActiveCategoryId] = useState<CategoryId | null>(null);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
@@ -54,7 +53,7 @@ function MainContent() {
       <Header
         showBack={activeCategoryId !== null}
         onBack={() => setActiveCategoryId(null)}
-        title={activeCategory ? activeCategory.titleBangla : undefined}
+        title={activeCategory ? (activeCategory.titleBangla || activeCategory.nameBangla) : undefined}
         subtitle={activeCategory ? activeCategory.timeBangla : undefined}
         onOpenSettings={() => setIsSettingsVisible(true)}
       />
@@ -80,12 +79,10 @@ function MainContent() {
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     noorehuda: require('./assets/fonts/noorehuda.ttf'),
-    // Primary reliable Bangla font: Noto Sans Bengali
     NotoSansBengali_400Regular: require('./assets/fonts/NotoSansBengali-Regular.ttf'),
     NotoSansBengali_500Medium: require('./assets/fonts/NotoSansBengali-Medium.ttf'),
     NotoSansBengali_600SemiBold: require('./assets/fonts/NotoSansBengali-SemiBold.ttf'),
     NotoSansBengali_700Bold: require('./assets/fonts/NotoSansBengali-Bold.ttf'),
-    // Backward-compatibility aliases so all existing styles render flawlessly
     HindSiliguri_400Regular: require('./assets/fonts/NotoSansBengali-Regular.ttf'),
     HindSiliguri_500Medium: require('./assets/fonts/NotoSansBengali-Medium.ttf'),
     HindSiliguri_600SemiBold: require('./assets/fonts/NotoSansBengali-SemiBold.ttf'),
@@ -109,9 +106,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SettingsProvider>
-        <DuaProgressProvider>
-          <MainContent />
-        </DuaProgressProvider>
+        <DuaDataProvider>
+          <DuaProgressProvider>
+            <MainContent />
+          </DuaProgressProvider>
+        </DuaDataProvider>
       </SettingsProvider>
     </SafeAreaProvider>
   );
