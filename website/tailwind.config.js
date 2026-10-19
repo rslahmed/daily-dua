@@ -23,7 +23,7 @@ export default {
         }
       },
       fontFamily: {
-        arabic: ['hafs', 'noorehuda', 'serif'],
+        arabic: ['noorehuda', 'serif'],
         bangla: ['Noto Sans Bengali', 'system-ui', 'sans-serif'],
       }
     },

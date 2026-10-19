@@ -68,10 +68,11 @@
 
 /* Arabic Typography Enhancements */
 .font-arabic {
-  font-family: 'hafs', 'noorehuda', serif;
-  font-feature-settings: "cv01", "cv02", "ss01";
-  word-spacing: 2px;
+  font-family: 'noorehuda', serif;
+  letter-spacing: 3px;
+  word-spacing: 4px;
   direction: rtl;
+  text-align: right;
 }
 
 /* Button & Card glow effects */

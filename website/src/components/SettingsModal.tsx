@@ -8,10 +8,10 @@ interface SettingsModalProps {
 }
 
 const fontSizes = [
-  { label: 'ছোট', size: 20 },
-  { label: 'সাধারণ', size: 24 },
-  { label: 'বড়', size: 28 },
-  { label: 'খুব বড়', size: 32 },
+  { label: 'ছোট', size: 22 },
+  { label: 'সাধারণ', size: 26 },
+  { label: 'বড়', size: 30 },
+  { label: 'খুব বড়', size: 34 },
 ];
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {

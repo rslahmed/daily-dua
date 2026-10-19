@@ -35,7 +35,7 @@ const defaultSettings: AppSettings = {
   showUccharon: true,
   showOrtho: true,
   showFazilat: true,
-  arabicFontSize: 24,
+  arabicFontSize: 26,
 };
 
 const DuaContext = createContext<DuaContextType | undefined>(undefined);

@@ -39,17 +39,21 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
                 // Parse ayat marks like ﴿١﴾, ﴿২﴾, etc.
                 const segments = line.split(/(﴿[0-9\u0660-\u0669\u09E6-\u09EF]+﴾)/g);
 
+                const lineFontSize = isBismillah ? Math.max(18, fontSize - 2) : fontSize;
+                const lineHeight = Math.round(lineFontSize * 1.75);
+
                 return (
                   <p
                     key={lIdx}
                     className={`font-arabic text-white select-text ${
                       isBismillah
                         ? 'text-center text-[#34D399] py-1 font-medium'
-                        : 'text-right leading-loose'
+                        : 'text-right'
                     }`}
                     style={{
-                      fontSize: isBismillah ? `${Math.max(18, fontSize - 2)}px` : `${fontSize}px`,
-                      lineHeight: `${fontSize * 2.1}px`,
+                      fontSize: `${lineFontSize}px`,
+                      lineHeight: `${lineHeight}px`,
+                      letterSpacing: '3px',
                     }}
                     dir="rtl"
                   >
@@ -60,7 +64,7 @@ export const DuaCard: React.FC<DuaCardProps> = ({ dua, index }) => {
                           <AyahBadge
                             key={sIdx}
                             number={match[1]}
-                            size={Math.round(fontSize * 1.05)}
+                            size={Math.round(fontSize * 0.95)}
                           />
                         );
                       }
