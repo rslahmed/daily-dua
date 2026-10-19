@@ -58,7 +58,7 @@ function AppContent() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-5 md:py-8">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-5 md:py-8">
         {isAdminView ? (
           <AdminPage onBackToApp={() => {
             setIsAdminView(false);
@@ -79,7 +79,7 @@ function AppContent() {
 
       {/* Footer */}
       <footer className="border-t border-[#14231E] py-5 text-center text-xs text-[#94A3B8]">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>🌙 দৈনিক দোয়া (Daily Dua) — সহীহ মাসনূন আমল</span>
           <button
             onClick={handleOpenAdmin}

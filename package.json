@@ -6,8 +6,11 @@
     "start": "npm start --prefix mobile-app",
     "android": "npm run android --prefix mobile-app",
     "ios": "npm run ios --prefix mobile-app",
-    "web": "npm run web --prefix mobile-app",
+    "mobile:web": "npm run web --prefix mobile-app",
     "emulator": "npm run emulator --prefix mobile-app",
-    "build:apk": "npm run build:apk --prefix mobile-app"
+    "build:apk": "npm run build:apk --prefix mobile-app",
+    "website": "npm run dev --prefix website",
+    "website:api": "php -S localhost:8000 -t website",
+    "website:build": "npm run build --prefix website"
   }
 }
