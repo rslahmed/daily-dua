@@ -144,6 +144,7 @@ if ($method === 'POST') {
             'categoryId' => $categoryIds[0] ?? ''
         ];
         file_put_contents($duaFile, json_encode($duas, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        sync_mobile_app_data($duas, null);
         $newVer = bump_version(null);
     }
 
@@ -226,6 +227,7 @@ if ($method === 'PUT') {
             }
         }
         file_put_contents($duaFile, json_encode($duas, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        sync_mobile_app_data($duas, null);
         $newVer = bump_version(null);
     }
 
@@ -254,6 +256,7 @@ if ($method === 'DELETE') {
         $duas = file_exists($duaFile) ? json_decode(file_get_contents($duaFile), true) : [];
         $duas = array_values(array_filter($duas, fn($d) => $d['id'] !== $id));
         file_put_contents($duaFile, json_encode($duas, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        sync_mobile_app_data($duas, null);
         $newVer = bump_version(null);
     }
 

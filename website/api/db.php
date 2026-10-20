@@ -46,16 +46,12 @@ function get_current_version($pdo) {
 }
 
 function bump_version($pdo) {
-    $newVersion = 1;
     $now = date('Y-m-d H:i:s');
+    $current = get_current_version($pdo);
+    $newVersion = max(1, (int)$current) + 1;
 
     if ($pdo) {
         try {
-            $stmt = $pdo->prepare("SELECT setting_value FROM system_settings WHERE setting_key = 'data_version'");
-            $stmt->execute();
-            $current = $stmt->fetchColumn();
-            $newVersion = $current !== false ? ((int)$current + 1) : 2;
-
             $stmt = $pdo->prepare("REPLACE INTO system_settings (setting_key, setting_value) VALUES ('data_version', :ver)");
             $stmt->execute([':ver' => (string)$newVersion]);
 
@@ -66,14 +62,35 @@ function bump_version($pdo) {
         }
     }
 
-    // Also persist in data/version.json
+    // Always persist in website data/version.json
     $verFile = __DIR__ . '/data/version.json';
     @file_put_contents($verFile, json_encode([
         'version' => $newVersion,
         'lastUpdated' => $now
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
+    // Also persist in mobile-app/src/data/version.json
+    $mobileVerFile = dirname(__DIR__, 2) . '/mobile-app/src/data/version.json';
+    if (file_exists(dirname($mobileVerFile))) {
+        @file_put_contents($mobileVerFile, json_encode([
+            'version' => $newVersion,
+            'lastUpdated' => $now
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+
     return $newVersion;
+}
+
+function sync_mobile_app_data($duas = null, $categories = null) {
+    $mobileAppDir = dirname(__DIR__, 2) . '/mobile-app/src/data';
+    if (!is_dir($mobileAppDir)) return;
+
+    if ($duas !== null) {
+        @file_put_contents($mobileAppDir . '/duas.json', json_encode($duas, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+    if ($categories !== null) {
+        @file_put_contents($mobileAppDir . '/categories.json', json_encode($categories, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
 }
 
 // Generate simple auth token

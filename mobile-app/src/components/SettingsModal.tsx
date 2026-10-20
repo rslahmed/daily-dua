@@ -43,9 +43,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
   const handleSyncPress = async () => {
     const res = await forceSync();
     if (res.success) {
+      const catCount = res.categories?.length ?? categories.length;
+      const duaCount = res.duas?.length ?? duas.length;
       Alert.alert(
         'সিঙ্ক সফল',
-        `সার্ভার থেকে সফলভাবে সিঙ্ক সম্পন্ন হয়েছে। মোট ${toBanglaNumber(categories.length)}টি ক্যাটাগরি ও ${toBanglaNumber(duas.length)}টি দোয়া পাওয়া গেছে।`
+        `সার্ভার থেকে সফলভাবে সিঙ্ক সম্পন্ন হয়েছে। মোট ${toBanglaNumber(catCount)}টি ক্যাটাগরি ও ${toBanglaNumber(duaCount)}টি দোয়া পাওয়া গেছে।`
       );
     } else {
       Alert.alert(

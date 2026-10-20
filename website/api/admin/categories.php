@@ -102,6 +102,7 @@ if ($method === 'POST') {
             'sortOrder' => $sort
         ];
         file_put_contents($catFile, json_encode($cats, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        sync_mobile_app_data(null, $cats);
         $newVer = bump_version(null);
     }
 
@@ -162,6 +163,7 @@ if ($method === 'PUT') {
             }
         }
         file_put_contents($catFile, json_encode($cats, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        sync_mobile_app_data(null, $cats);
         $newVer = bump_version(null);
     }
 
@@ -190,6 +192,7 @@ if ($method === 'DELETE') {
         $cats = file_exists($catFile) ? json_decode(file_get_contents($catFile), true) : [];
         $cats = array_values(array_filter($cats, fn($c) => $c['id'] !== $id));
         file_put_contents($catFile, json_encode($cats, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        sync_mobile_app_data(null, $cats);
         $newVer = bump_version(null);
     }
 

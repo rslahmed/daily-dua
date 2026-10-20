@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 import { Category, Dua } from '../types/dua';
 import { loadOfflineData, checkForDataUpdates, forceSyncData } from '../services/dataSyncService';
 
@@ -9,7 +10,13 @@ interface DuaDataContextType {
   isDataLoaded: boolean;
   isSyncing: boolean;
   checkForUpdates: () => Promise<boolean>;
-  forceSync: () => Promise<{ success: boolean; error?: string }>;
+  forceSync: () => Promise<{
+    success: boolean;
+    categories?: Category[];
+    duas?: Dua[];
+    version?: number;
+    error?: string;
+  }>;
 }
 
 const DuaDataContext = createContext<DuaDataContextType | undefined>(undefined);
@@ -20,6 +27,7 @@ export const DuaDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [dataVersion, setDataVersion] = useState<number>(1);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     // 1. Instant Offline Startup
@@ -32,6 +40,26 @@ export const DuaDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // 2. Silent Background Sync Check (if online)
       runBackgroundSync();
     });
+
+    // 3. Auto sync when app returns from background to foreground
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      if (appState.current?.match(/inactive|background/) && nextAppState === 'active') {
+        runBackgroundSync();
+      }
+      appState.current = nextAppState;
+    });
+
+    // 4. Periodic background sync check every 25 seconds when active
+    const timer = setInterval(() => {
+      if (AppState.currentState === 'active') {
+        runBackgroundSync();
+      }
+    }, 25000);
+
+    return () => {
+      subscription.remove();
+      clearInterval(timer);
+    };
   }, []);
 
   const runBackgroundSync = async (): Promise<boolean> => {

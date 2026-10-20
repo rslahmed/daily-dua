@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CategoryId } from '../types/dua';
 import { DuaCard } from '../components/DuaCard';
@@ -15,8 +15,9 @@ interface CategoryDetailScreenProps {
 type FilterTab = 'all' | 'unread' | 'read';
 
 export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ categoryId }) => {
-  const { categories, duas } = useDuaData();
+  const { categories, duas, checkForUpdates } = useDuaData();
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
+  const [refreshing, setRefreshing] = useState(false);
   const { isDuaRead, getCategoryProgress } = useDuaProgress();
 
   const currentCategory = categories.find((c) => c.id === categoryId) || {
@@ -46,11 +47,25 @@ export const CategoryDetailScreen: React.FC<CategoryDetailScreenProps> = ({ cate
 
   const unreadCount = total - completed;
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await checkForUpdates();
+    setRefreshing(false);
+  };
+
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor="#10B981"
+          colors={['#10B981']}
+        />
+      }
     >
       {/* Category Progress Banner */}
       <View style={styles.banner}>
