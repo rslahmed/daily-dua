@@ -4,10 +4,15 @@ set_cors_headers();
 
 $pdo = get_db();
 if (!$pdo) {
+    if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'text/html') !== false) {
+        header('Location: setup.php');
+        exit();
+    }
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => 'Could not connect to MariaDB database. Please check your DB credentials in website/api/config.php.'
+        'message' => 'Could not connect to database. Please visit /api/setup.php in your browser to configure and connect.',
+        'setup_wizard_url' => 'setup.php'
     ]);
     exit();
 }

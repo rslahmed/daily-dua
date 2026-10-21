@@ -44,3 +44,4 @@ yarn-error.*
 scripts/pages/
 scripts/*.png
 scripts/*.txt
+*.zip
