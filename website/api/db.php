@@ -18,8 +18,18 @@ function get_db() {
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         return $pdo;
     } catch (PDOException $e) {
-        // Return null if database is not reachable, so fallback can be used
-        return null;
+        // If unknown database, try alternate naming variant (e.g. rslahmed_daily_dua vs rslahmed_dailydua)
+        $altDb = (strpos(DB_NAME, '_dua') !== false)
+            ? str_replace('_dua', 'dua', DB_NAME)
+            : str_replace('dua', '_dua', DB_NAME);
+        try {
+            $dsn2 = "mysql:host=" . DB_HOST . ";dbname=" . $altDb . ";charset=" . DB_CHARSET;
+            $pdo = new PDO($dsn2, DB_USER, DB_PASS, $options);
+            return $pdo;
+        } catch (PDOException $e2) {
+            // Return null if database is not reachable, so fallback can be used
+            return null;
+        }
     }
 }
 
